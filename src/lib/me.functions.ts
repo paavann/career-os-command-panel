@@ -132,6 +132,7 @@ export const getMe = createServerFn({ method: "GET" })
         revenue: scores.revenue,
       },
       missions,
+      goalCompletionsToday: (goalDoneRes.data ?? []).map((r: any) => r.mission_slug),
       isAdmin,
     };
   });
