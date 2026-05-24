@@ -9,113 +9,113 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as ProfileRouteImport } from './routes/profile'
-import { Route as PricingRouteImport } from './routes/pricing'
-import { Route as MissionsRouteImport } from './routes/missions'
-import { Route as JourneyRouteImport } from './routes/journey'
-import { Route as EventsRouteImport } from './routes/events'
-import { Route as CoursesRouteImport } from './routes/courses'
-import { Route as CommunityRouteImport } from './routes/community'
-import { Route as AiRouteImport } from './routes/ai'
-import { Route as ToolsIndexRouteImport } from './routes/tools/index'
 import { Route as AuthenticatedIndexRouteImport } from './routes/_authenticated/index'
-import { Route as ToolsSlugRouteImport } from './routes/tools/$slug'
+import { Route as AuthenticatedProfileRouteImport } from './routes/_authenticated/profile'
+import { Route as AuthenticatedPricingRouteImport } from './routes/_authenticated/pricing'
+import { Route as AuthenticatedMissionsRouteImport } from './routes/_authenticated/missions'
+import { Route as AuthenticatedJourneyRouteImport } from './routes/_authenticated/journey'
+import { Route as AuthenticatedEventsRouteImport } from './routes/_authenticated/events'
+import { Route as AuthenticatedCoursesRouteImport } from './routes/_authenticated/courses'
+import { Route as AuthenticatedCommunityRouteImport } from './routes/_authenticated/community'
+import { Route as AuthenticatedAiRouteImport } from './routes/_authenticated/ai'
+import { Route as AuthenticatedToolsIndexRouteImport } from './routes/_authenticated/tools/index'
+import { Route as AuthenticatedToolsSlugRouteImport } from './routes/_authenticated/tools/$slug'
 
-const ProfileRoute = ProfileRouteImport.update({
-  id: '/profile',
-  path: '/profile',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PricingRoute = PricingRouteImport.update({
-  id: '/pricing',
-  path: '/pricing',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const MissionsRoute = MissionsRouteImport.update({
-  id: '/missions',
-  path: '/missions',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const JourneyRoute = JourneyRouteImport.update({
-  id: '/journey',
-  path: '/journey',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const EventsRoute = EventsRouteImport.update({
-  id: '/events',
-  path: '/events',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const CoursesRoute = CoursesRouteImport.update({
-  id: '/courses',
-  path: '/courses',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const CommunityRoute = CommunityRouteImport.update({
-  id: '/community',
-  path: '/community',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AiRoute = AiRouteImport.update({
-  id: '/ai',
-  path: '/ai',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ToolsIndexRoute = ToolsIndexRouteImport.update({
-  id: '/tools/',
-  path: '/tools/',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const AuthenticatedIndexRoute = AuthenticatedIndexRouteImport.update({
   id: '/_authenticated/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ToolsSlugRoute = ToolsSlugRouteImport.update({
-  id: '/tools/$slug',
+const AuthenticatedProfileRoute = AuthenticatedProfileRouteImport.update({
+  id: '/_authenticated/profile',
+  path: '/profile',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedPricingRoute = AuthenticatedPricingRouteImport.update({
+  id: '/_authenticated/pricing',
+  path: '/pricing',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedMissionsRoute = AuthenticatedMissionsRouteImport.update({
+  id: '/_authenticated/missions',
+  path: '/missions',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedJourneyRoute = AuthenticatedJourneyRouteImport.update({
+  id: '/_authenticated/journey',
+  path: '/journey',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedEventsRoute = AuthenticatedEventsRouteImport.update({
+  id: '/_authenticated/events',
+  path: '/events',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedCoursesRoute = AuthenticatedCoursesRouteImport.update({
+  id: '/_authenticated/courses',
+  path: '/courses',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedCommunityRoute = AuthenticatedCommunityRouteImport.update({
+  id: '/_authenticated/community',
+  path: '/community',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedAiRoute = AuthenticatedAiRouteImport.update({
+  id: '/_authenticated/ai',
+  path: '/ai',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedToolsIndexRoute = AuthenticatedToolsIndexRouteImport.update({
+  id: '/_authenticated/tools/',
+  path: '/tools/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedToolsSlugRoute = AuthenticatedToolsSlugRouteImport.update({
+  id: '/_authenticated/tools/$slug',
   path: '/tools/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
 
 export interface FileRoutesByFullPath {
-  '/ai': typeof AiRoute
-  '/community': typeof CommunityRoute
-  '/courses': typeof CoursesRoute
-  '/events': typeof EventsRoute
-  '/journey': typeof JourneyRoute
-  '/missions': typeof MissionsRoute
-  '/pricing': typeof PricingRoute
-  '/profile': typeof ProfileRoute
-  '/tools/$slug': typeof ToolsSlugRoute
+  '/ai': typeof AuthenticatedAiRoute
+  '/community': typeof AuthenticatedCommunityRoute
+  '/courses': typeof AuthenticatedCoursesRoute
+  '/events': typeof AuthenticatedEventsRoute
+  '/journey': typeof AuthenticatedJourneyRoute
+  '/missions': typeof AuthenticatedMissionsRoute
+  '/pricing': typeof AuthenticatedPricingRoute
+  '/profile': typeof AuthenticatedProfileRoute
   '/': typeof AuthenticatedIndexRoute
-  '/tools/': typeof ToolsIndexRoute
+  '/tools/$slug': typeof AuthenticatedToolsSlugRoute
+  '/tools/': typeof AuthenticatedToolsIndexRoute
 }
 export interface FileRoutesByTo {
-  '/ai': typeof AiRoute
-  '/community': typeof CommunityRoute
-  '/courses': typeof CoursesRoute
-  '/events': typeof EventsRoute
-  '/journey': typeof JourneyRoute
-  '/missions': typeof MissionsRoute
-  '/pricing': typeof PricingRoute
-  '/profile': typeof ProfileRoute
-  '/tools/$slug': typeof ToolsSlugRoute
+  '/ai': typeof AuthenticatedAiRoute
+  '/community': typeof AuthenticatedCommunityRoute
+  '/courses': typeof AuthenticatedCoursesRoute
+  '/events': typeof AuthenticatedEventsRoute
+  '/journey': typeof AuthenticatedJourneyRoute
+  '/missions': typeof AuthenticatedMissionsRoute
+  '/pricing': typeof AuthenticatedPricingRoute
+  '/profile': typeof AuthenticatedProfileRoute
   '/': typeof AuthenticatedIndexRoute
-  '/tools': typeof ToolsIndexRoute
+  '/tools/$slug': typeof AuthenticatedToolsSlugRoute
+  '/tools': typeof AuthenticatedToolsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
-  '/ai': typeof AiRoute
-  '/community': typeof CommunityRoute
-  '/courses': typeof CoursesRoute
-  '/events': typeof EventsRoute
-  '/journey': typeof JourneyRoute
-  '/missions': typeof MissionsRoute
-  '/pricing': typeof PricingRoute
-  '/profile': typeof ProfileRoute
-  '/tools/$slug': typeof ToolsSlugRoute
+  '/_authenticated/ai': typeof AuthenticatedAiRoute
+  '/_authenticated/community': typeof AuthenticatedCommunityRoute
+  '/_authenticated/courses': typeof AuthenticatedCoursesRoute
+  '/_authenticated/events': typeof AuthenticatedEventsRoute
+  '/_authenticated/journey': typeof AuthenticatedJourneyRoute
+  '/_authenticated/missions': typeof AuthenticatedMissionsRoute
+  '/_authenticated/pricing': typeof AuthenticatedPricingRoute
+  '/_authenticated/profile': typeof AuthenticatedProfileRoute
   '/_authenticated/': typeof AuthenticatedIndexRoute
-  '/tools/': typeof ToolsIndexRoute
+  '/_authenticated/tools/$slug': typeof AuthenticatedToolsSlugRoute
+  '/_authenticated/tools/': typeof AuthenticatedToolsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -128,8 +128,8 @@ export interface FileRouteTypes {
     | '/missions'
     | '/pricing'
     | '/profile'
-    | '/tools/$slug'
     | '/'
+    | '/tools/$slug'
     | '/tools/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -141,103 +141,40 @@ export interface FileRouteTypes {
     | '/missions'
     | '/pricing'
     | '/profile'
-    | '/tools/$slug'
     | '/'
+    | '/tools/$slug'
     | '/tools'
   id:
     | '__root__'
-    | '/ai'
-    | '/community'
-    | '/courses'
-    | '/events'
-    | '/journey'
-    | '/missions'
-    | '/pricing'
-    | '/profile'
-    | '/tools/$slug'
+    | '/_authenticated/ai'
+    | '/_authenticated/community'
+    | '/_authenticated/courses'
+    | '/_authenticated/events'
+    | '/_authenticated/journey'
+    | '/_authenticated/missions'
+    | '/_authenticated/pricing'
+    | '/_authenticated/profile'
     | '/_authenticated/'
-    | '/tools/'
+    | '/_authenticated/tools/$slug'
+    | '/_authenticated/tools/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-  AiRoute: typeof AiRoute
-  CommunityRoute: typeof CommunityRoute
-  CoursesRoute: typeof CoursesRoute
-  EventsRoute: typeof EventsRoute
-  JourneyRoute: typeof JourneyRoute
-  MissionsRoute: typeof MissionsRoute
-  PricingRoute: typeof PricingRoute
-  ProfileRoute: typeof ProfileRoute
-  ToolsSlugRoute: typeof ToolsSlugRoute
+  AuthenticatedAiRoute: typeof AuthenticatedAiRoute
+  AuthenticatedCommunityRoute: typeof AuthenticatedCommunityRoute
+  AuthenticatedCoursesRoute: typeof AuthenticatedCoursesRoute
+  AuthenticatedEventsRoute: typeof AuthenticatedEventsRoute
+  AuthenticatedJourneyRoute: typeof AuthenticatedJourneyRoute
+  AuthenticatedMissionsRoute: typeof AuthenticatedMissionsRoute
+  AuthenticatedPricingRoute: typeof AuthenticatedPricingRoute
+  AuthenticatedProfileRoute: typeof AuthenticatedProfileRoute
   AuthenticatedIndexRoute: typeof AuthenticatedIndexRoute
-  ToolsIndexRoute: typeof ToolsIndexRoute
+  AuthenticatedToolsSlugRoute: typeof AuthenticatedToolsSlugRoute
+  AuthenticatedToolsIndexRoute: typeof AuthenticatedToolsIndexRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/profile': {
-      id: '/profile'
-      path: '/profile'
-      fullPath: '/profile'
-      preLoaderRoute: typeof ProfileRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/pricing': {
-      id: '/pricing'
-      path: '/pricing'
-      fullPath: '/pricing'
-      preLoaderRoute: typeof PricingRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/missions': {
-      id: '/missions'
-      path: '/missions'
-      fullPath: '/missions'
-      preLoaderRoute: typeof MissionsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/journey': {
-      id: '/journey'
-      path: '/journey'
-      fullPath: '/journey'
-      preLoaderRoute: typeof JourneyRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/events': {
-      id: '/events'
-      path: '/events'
-      fullPath: '/events'
-      preLoaderRoute: typeof EventsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/courses': {
-      id: '/courses'
-      path: '/courses'
-      fullPath: '/courses'
-      preLoaderRoute: typeof CoursesRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/community': {
-      id: '/community'
-      path: '/community'
-      fullPath: '/community'
-      preLoaderRoute: typeof CommunityRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/ai': {
-      id: '/ai'
-      path: '/ai'
-      fullPath: '/ai'
-      preLoaderRoute: typeof AiRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/tools/': {
-      id: '/tools/'
-      path: '/tools'
-      fullPath: '/tools/'
-      preLoaderRoute: typeof ToolsIndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/_authenticated/': {
       id: '/_authenticated/'
       path: '/'
@@ -245,28 +182,91 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/tools/$slug': {
-      id: '/tools/$slug'
+    '/_authenticated/profile': {
+      id: '/_authenticated/profile'
+      path: '/profile'
+      fullPath: '/profile'
+      preLoaderRoute: typeof AuthenticatedProfileRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/pricing': {
+      id: '/_authenticated/pricing'
+      path: '/pricing'
+      fullPath: '/pricing'
+      preLoaderRoute: typeof AuthenticatedPricingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/missions': {
+      id: '/_authenticated/missions'
+      path: '/missions'
+      fullPath: '/missions'
+      preLoaderRoute: typeof AuthenticatedMissionsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/journey': {
+      id: '/_authenticated/journey'
+      path: '/journey'
+      fullPath: '/journey'
+      preLoaderRoute: typeof AuthenticatedJourneyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/events': {
+      id: '/_authenticated/events'
+      path: '/events'
+      fullPath: '/events'
+      preLoaderRoute: typeof AuthenticatedEventsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/courses': {
+      id: '/_authenticated/courses'
+      path: '/courses'
+      fullPath: '/courses'
+      preLoaderRoute: typeof AuthenticatedCoursesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/community': {
+      id: '/_authenticated/community'
+      path: '/community'
+      fullPath: '/community'
+      preLoaderRoute: typeof AuthenticatedCommunityRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/ai': {
+      id: '/_authenticated/ai'
+      path: '/ai'
+      fullPath: '/ai'
+      preLoaderRoute: typeof AuthenticatedAiRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/tools/': {
+      id: '/_authenticated/tools/'
+      path: '/tools'
+      fullPath: '/tools/'
+      preLoaderRoute: typeof AuthenticatedToolsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/tools/$slug': {
+      id: '/_authenticated/tools/$slug'
       path: '/tools/$slug'
       fullPath: '/tools/$slug'
-      preLoaderRoute: typeof ToolsSlugRouteImport
+      preLoaderRoute: typeof AuthenticatedToolsSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
-  AiRoute: AiRoute,
-  CommunityRoute: CommunityRoute,
-  CoursesRoute: CoursesRoute,
-  EventsRoute: EventsRoute,
-  JourneyRoute: JourneyRoute,
-  MissionsRoute: MissionsRoute,
-  PricingRoute: PricingRoute,
-  ProfileRoute: ProfileRoute,
-  ToolsSlugRoute: ToolsSlugRoute,
+  AuthenticatedAiRoute: AuthenticatedAiRoute,
+  AuthenticatedCommunityRoute: AuthenticatedCommunityRoute,
+  AuthenticatedCoursesRoute: AuthenticatedCoursesRoute,
+  AuthenticatedEventsRoute: AuthenticatedEventsRoute,
+  AuthenticatedJourneyRoute: AuthenticatedJourneyRoute,
+  AuthenticatedMissionsRoute: AuthenticatedMissionsRoute,
+  AuthenticatedPricingRoute: AuthenticatedPricingRoute,
+  AuthenticatedProfileRoute: AuthenticatedProfileRoute,
   AuthenticatedIndexRoute: AuthenticatedIndexRoute,
-  ToolsIndexRoute: ToolsIndexRoute,
+  AuthenticatedToolsSlugRoute: AuthenticatedToolsSlugRoute,
+  AuthenticatedToolsIndexRoute: AuthenticatedToolsIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
