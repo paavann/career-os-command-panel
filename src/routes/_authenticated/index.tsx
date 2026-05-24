@@ -77,11 +77,51 @@ function Dashboard() {
 
   const p = data.profile;
   const s = data.scores;
-  const dailyMissions = data.missions.filter((m) => m.category === "daily");
-  const doneCount = dailyMissions.filter((m) => m.status === "completed").length;
   const currentLevelIdx = Math.min(journey.length - 1, Math.max(0, p.level - 1));
   const progressPct = ((currentLevelIdx) / (journey.length - 1)) * 100;
   const lbRows = (lb?.rows ?? []).slice(0, 5);
+
+  // Goal-track missions
+  const track = trackForGoal(p.primary_goal);
+  const doneSet = new Set(data.goalCompletionsToday);
+  const trackDoneCount = track.missions.filter((m) => doneSet.has(m.slug)).length;
+
+  // Weakest pillar
+  const pillars = [
+    { key: "clarity",   label: "Clarity"   },
+    { key: "authority", label: "Authority" },
+    { key: "reach",     label: "Reach"     },
+    { key: "evidence",  label: "Evidence"  },
+    { key: "energy",    label: "Energy"    },
+    { key: "revenue",   label: "Revenue"   },
+  ] as const;
+  const weakest = pillars.reduce((min, x) => (s[x.key] < s[min.key] ? x : min), pillars[0]);
+
+  // Timeline math
+  const WEEKS: Record<string, number> = { "3 months": 13, "6 months": 26, "12 months": 52 };
+  const totalWeeks = p.target_timeline ? WEEKS[p.target_timeline] ?? 0 : 0;
+  const startedAt = p.created_at ? new Date(p.created_at).getTime() : Date.now();
+  const weeksElapsed = Math.floor((Date.now() - startedAt) / (7 * 86_400_000));
+  const weeksLeft = Math.max(0, totalWeeks - weeksElapsed);
+
+  // Personalized strategist insight (2 lines)
+  const goalLabel = p.primary_goal ?? "your goal";
+  const goalLowercase = goalLabel.toLowerCase();
+  const authoritySignal = p.headline?.trim()
+    ? `your ${p.headline.trim()} is your authority signal`
+    : `your experience is your authority signal — name it`;
+  const pillarAction: Record<string, string> = {
+    clarity:   "rewrite your headline to name your niche outcome",
+    authority: "ship one POV post that names a contrarian truth in your field",
+    reach:     "publish one LinkedIn post today",
+    evidence:  "quantify one win from this quarter with a hard number",
+    energy:    "block 25 minutes of distraction-free deep work today",
+    revenue:   "pull 3 comp benchmarks for your target role",
+  };
+  const line1 = totalWeeks > 0
+    ? `Your ${weakest.label} is at ${s[weakest.key]}. You have ${weeksLeft} weeks to ${goalLowercase}.`
+    : `Your ${weakest.label} is at ${s[weakest.key]}. Lock a target timeline to pace your push to ${goalLowercase}.`;
+  const line2 = `Start with: ${pillarAction[weakest.key]} — ${authoritySignal}.`;
 
   return (
     <div className="max-w-7xl mx-auto px-6 py-8 space-y-10">
