@@ -52,7 +52,8 @@ export const getMe = createServerFn({ method: "GET" })
   .handler(async ({ context }): Promise<MeData> => {
     const { supabase, userId } = context;
 
-    const [profileRes, scoresRes, missionsRes, rolesRes] = await Promise.all([
+    const todayIso = new Date().toISOString().slice(0, 10);
+    const [profileRes, scoresRes, missionsRes, rolesRes, goalDoneRes] = await Promise.all([
       supabase.from("profiles").select("*").eq("id", userId).maybeSingle(),
       supabase.from("career_scores").select("*").eq("user_id", userId).maybeSingle(),
       supabase
@@ -60,6 +61,11 @@ export const getMe = createServerFn({ method: "GET" })
         .select("id, status, completed_at, mission:missions(id, title, description, xp_reward, coin_reward, category, active)")
         .eq("user_id", userId),
       supabase.from("user_roles").select("role").eq("user_id", userId),
+      supabase
+        .from("goal_mission_completions")
+        .select("mission_slug")
+        .eq("user_id", userId)
+        .eq("completed_on", todayIso),
     ]);
 
     const profile = (profileRes.data ?? {
