@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
@@ -10,6 +11,8 @@ import { useMe } from "@/components/layout/AppShell";
 import { completeMission, completeGoalMission, getLeaderboard } from "@/lib/me.functions";
 import { TodaysBrief } from "@/components/dashboard/TodaysBrief";
 import { trackForGoal } from "@/lib/goal-tracks";
+import { EngineModal } from "@/components/engines/EngineModal";
+import type { PillarKey } from "@/lib/engines";
 
 export const Route = createFileRoute("/_authenticated/")({
   head: () => ({
@@ -53,6 +56,8 @@ function Dashboard() {
   const completeGoal = useServerFn(completeGoalMission);
   const fetchLb = useServerFn(getLeaderboard);
   const { data: lb } = useQuery({ queryKey: ["leaderboard"], queryFn: () => fetchLb(), staleTime: 30_000 });
+  const [openEngine, setOpenEngine] = useState<PillarKey | null>(null);
+
 
   const onSuccess = (res: any) => {
     if (res.alreadyDone) toast.info("Already done today");
@@ -287,11 +292,10 @@ function Dashboard() {
             const Icon = t.icon;
             const score = s[t.key];
             return (
-              <Link
+              <button
                 key={t.slug}
-                to="/tools/$slug"
-                params={{ slug: t.slug }}
-                className={`group rounded-2xl p-6 border transition-all flex flex-col h-full
+                onClick={() => setOpenEngine(t.key as PillarKey)}
+                className={`group text-left rounded-2xl p-6 border transition-all flex flex-col h-full
                   ${t.featured
                     ? "bg-gradient-to-br from-purple/25 to-electric/15 border-purple/40 hover:border-purple"
                     : "glass hover:border-electric/40"}`}
@@ -311,13 +315,18 @@ function Dashboard() {
                 </div>
                 <h3 className="font-display font-bold text-lg leading-tight">{t.name}</h3>
                 <p className="text-sm text-muted-foreground mt-2 flex-1">{t.desc}</p>
-                <div className="mt-5 text-xs font-mono uppercase tracking-widest flex items-center gap-1 text-foreground/70 group-hover:text-foreground">
-                  {t.featured ? "Action required" : "Open module"} <ArrowUpRight className="size-3 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+                <div className="mt-5 text-xs font-mono uppercase tracking-widest flex items-center gap-1 text-electric group-hover:gap-2 transition-all">
+                  Open engine <ArrowUpRight className="size-3 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
                 </div>
-              </Link>
+              </button>
             );
           })}
         </div>
+        <EngineModal
+          pillar={openEngine}
+          currentScore={openEngine ? s[openEngine] : 0}
+          onClose={() => setOpenEngine(null)}
+        />
       </section>
 
       <section className="grid grid-cols-1 lg:grid-cols-2 gap-6 pb-12 animate-slide-up [animation-delay:400ms]">
