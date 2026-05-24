@@ -7,8 +7,9 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import { useMe } from "@/components/layout/AppShell";
-import { completeMission, getLeaderboard } from "@/lib/me.functions";
+import { completeMission, completeGoalMission, getLeaderboard } from "@/lib/me.functions";
 import { TodaysBrief } from "@/components/dashboard/TodaysBrief";
+import { trackForGoal } from "@/lib/goal-tracks";
 
 export const Route = createFileRoute("/_authenticated/")({
   head: () => ({
@@ -49,18 +50,25 @@ function Dashboard() {
   const { data, isLoading } = useMe();
   const qc = useQueryClient();
   const complete = useServerFn(completeMission);
+  const completeGoal = useServerFn(completeGoalMission);
   const fetchLb = useServerFn(getLeaderboard);
   const { data: lb } = useQuery({ queryKey: ["leaderboard"], queryFn: () => fetchLb(), staleTime: 30_000 });
 
+  const onSuccess = (res: any) => {
+    if (res.alreadyDone) toast.info("Already done today");
+    else toast.success(`+${res.xp} XP · +${res.coins} coins`);
+    qc.invalidateQueries({ queryKey: ["me"] });
+    qc.invalidateQueries({ queryKey: ["leaderboard"] });
+  };
+  const onError = (e: any) => toast.error(e?.message ?? "Failed");
+
   const mut = useMutation({
     mutationFn: (id: string) => complete({ data: { userMissionId: id } }),
-    onSuccess: (res) => {
-      if (res.alreadyDone) toast.info("Already done");
-      else toast.success(`+${res.xp} XP · +${res.coins} coins`);
-      qc.invalidateQueries({ queryKey: ["me"] });
-      qc.invalidateQueries({ queryKey: ["leaderboard"] });
-    },
-    onError: (e: any) => toast.error(e?.message ?? "Failed"),
+    onSuccess, onError,
+  });
+  const goalMut = useMutation({
+    mutationFn: (slug: string) => completeGoal({ data: { slug } }),
+    onSuccess, onError,
   });
 
   if (isLoading || !data) {
@@ -69,11 +77,51 @@ function Dashboard() {
 
   const p = data.profile;
   const s = data.scores;
-  const dailyMissions = data.missions.filter((m) => m.category === "daily");
-  const doneCount = dailyMissions.filter((m) => m.status === "completed").length;
   const currentLevelIdx = Math.min(journey.length - 1, Math.max(0, p.level - 1));
   const progressPct = ((currentLevelIdx) / (journey.length - 1)) * 100;
   const lbRows = (lb?.rows ?? []).slice(0, 5);
+
+  // Goal-track missions
+  const track = trackForGoal(p.primary_goal);
+  const doneSet = new Set(data.goalCompletionsToday);
+  const trackDoneCount = track.missions.filter((m) => doneSet.has(m.slug)).length;
+
+  // Weakest pillar
+  const pillars = [
+    { key: "clarity",   label: "Clarity"   },
+    { key: "authority", label: "Authority" },
+    { key: "reach",     label: "Reach"     },
+    { key: "evidence",  label: "Evidence"  },
+    { key: "energy",    label: "Energy"    },
+    { key: "revenue",   label: "Revenue"   },
+  ] as const;
+  const weakest = pillars.reduce((min, x) => (s[x.key] < s[min.key] ? x : min), pillars[0]);
+
+  // Timeline math
+  const WEEKS: Record<string, number> = { "3 months": 13, "6 months": 26, "12 months": 52 };
+  const totalWeeks = p.target_timeline ? WEEKS[p.target_timeline] ?? 0 : 0;
+  const startedAt = p.created_at ? new Date(p.created_at).getTime() : Date.now();
+  const weeksElapsed = Math.floor((Date.now() - startedAt) / (7 * 86_400_000));
+  const weeksLeft = Math.max(0, totalWeeks - weeksElapsed);
+
+  // Personalized strategist insight (2 lines)
+  const goalLabel = p.primary_goal ?? "your goal";
+  const goalLowercase = goalLabel.toLowerCase();
+  const authoritySignal = p.headline?.trim()
+    ? `your ${p.headline.trim()} is your authority signal`
+    : `your experience is your authority signal — name it`;
+  const pillarAction: Record<string, string> = {
+    clarity:   "rewrite your headline to name your niche outcome",
+    authority: "ship one POV post that names a contrarian truth in your field",
+    reach:     "publish one LinkedIn post today",
+    evidence:  "quantify one win from this quarter with a hard number",
+    energy:    "block 25 minutes of distraction-free deep work today",
+    revenue:   "pull 3 comp benchmarks for your target role",
+  };
+  const line1 = totalWeeks > 0
+    ? `Your ${weakest.label} is at ${s[weakest.key]}. You have ${weeksLeft} weeks to ${goalLowercase}.`
+    : `Your ${weakest.label} is at ${s[weakest.key]}. Lock a target timeline to pace your push to ${goalLowercase}.`;
+  const line2 = `Start with: ${pillarAction[weakest.key]} — ${authoritySignal}.`;
 
   return (
     <div className="max-w-7xl mx-auto px-6 py-8 space-y-10">
@@ -135,11 +183,14 @@ function Dashboard() {
           <div className="rounded-3xl p-6 bg-gradient-brand relative overflow-hidden">
             <div className="absolute -top-10 -right-10 size-40 rounded-full bg-white/20 blur-2xl" />
             <div className="relative">
-              <div className="text-[10px] font-mono uppercase tracking-[0.25em] text-white/80 font-bold">AI Strategist</div>
-              <p className="text-lg font-display font-semibold leading-snug mt-3 text-white">
-                "{p.streak_days >= 3
-                  ? `Streak locked at ${p.streak_days} days — momentum is your moat. Run a Reach sprint today.`
-                  : "Hit your daily missions to lock in a streak and compound CPI."}"
+              <div className="text-[10px] font-mono uppercase tracking-[0.25em] text-white/80 font-bold flex items-center gap-2">
+                <Sparkles className="size-3" /> AI Strategist
+              </div>
+              <p className="text-base font-display font-semibold leading-snug mt-3 text-white">
+                {line1}
+              </p>
+              <p className="text-sm leading-snug mt-2 text-white/90">
+                {line2}
               </p>
               <Link to="/ai" className="mt-6 block w-full py-2.5 rounded-xl bg-white text-navy font-bold text-sm text-center hover:scale-[1.02] transition-transform">
                 Open AI Hub →
@@ -148,28 +199,31 @@ function Dashboard() {
           </div>
 
           <div className="glass rounded-3xl p-6">
-            <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center justify-between mb-1">
               <h3 className="text-sm font-semibold">Daily Missions</h3>
-              <span className="text-[10px] font-mono text-muted-foreground">{doneCount} / {dailyMissions.length}</span>
+              <span className="text-[10px] font-mono text-muted-foreground">{trackDoneCount} / {track.missions.length}</span>
             </div>
+            <p className="text-[10px] font-mono uppercase tracking-widest text-electric mb-4">
+              {track.goal} track
+            </p>
             <div className="space-y-2">
-              {dailyMissions.length === 0 && (
-                <div className="text-xs text-muted-foreground py-2">No daily missions today.</div>
-              )}
-              {dailyMissions.slice(0, 4).map((m) => {
-                const done = m.status === "completed";
+              {track.missions.map((m) => {
+                const done = doneSet.has(m.slug);
                 return (
                   <button
-                    key={m.user_mission_id}
-                    disabled={done || mut.isPending}
-                    onClick={() => mut.mutate(m.user_mission_id)}
+                    key={m.slug}
+                    disabled={done || goalMut.isPending}
+                    onClick={() => goalMut.mutate(m.slug)}
                     className={`w-full text-left flex items-center gap-3 p-2.5 rounded-lg transition-colors ${
                       done ? "opacity-60" : "hover:bg-accent/40 cursor-pointer"
                     }`}
                   >
                     {done ? <CheckCircle2 className="size-5 text-electric shrink-0" /> : <Circle className="size-5 text-muted-foreground shrink-0" />}
-                    <span className={`text-sm flex-1 truncate ${done ? "line-through text-muted-foreground" : ""}`}>{m.title}</span>
-                    <span className="text-[10px] font-mono font-bold text-gold bg-gold/10 px-2 py-0.5 rounded">+{m.xp_reward}</span>
+                    <div className="flex-1 min-w-0">
+                      <div className={`text-sm truncate ${done ? "line-through text-muted-foreground" : ""}`}>{m.title}</div>
+                      <div className="text-[9px] font-mono uppercase tracking-widest text-muted-foreground/70">{m.pillar}</div>
+                    </div>
+                    <span className="text-[10px] font-mono font-bold text-gold bg-gold/10 px-2 py-0.5 rounded shrink-0">+{m.xp}</span>
                   </button>
                 );
               })}

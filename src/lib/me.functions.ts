@@ -43,6 +43,7 @@ export type MeData = {
     user_mission_id: string;
     completed_at: string | null;
   }>;
+  goalCompletionsToday: string[];
   isAdmin: boolean;
 };
 
@@ -51,7 +52,8 @@ export const getMe = createServerFn({ method: "GET" })
   .handler(async ({ context }): Promise<MeData> => {
     const { supabase, userId } = context;
 
-    const [profileRes, scoresRes, missionsRes, rolesRes] = await Promise.all([
+    const todayIso = new Date().toISOString().slice(0, 10);
+    const [profileRes, scoresRes, missionsRes, rolesRes, goalDoneRes] = await Promise.all([
       supabase.from("profiles").select("*").eq("id", userId).maybeSingle(),
       supabase.from("career_scores").select("*").eq("user_id", userId).maybeSingle(),
       supabase
@@ -59,6 +61,11 @@ export const getMe = createServerFn({ method: "GET" })
         .select("id, status, completed_at, mission:missions(id, title, description, xp_reward, coin_reward, category, active)")
         .eq("user_id", userId),
       supabase.from("user_roles").select("role").eq("user_id", userId),
+      supabase
+        .from("goal_mission_completions")
+        .select("mission_slug")
+        .eq("user_id", userId)
+        .eq("completed_on", todayIso),
     ]);
 
     const profile = (profileRes.data ?? {
@@ -125,6 +132,7 @@ export const getMe = createServerFn({ method: "GET" })
         revenue: scores.revenue,
       },
       missions,
+      goalCompletionsToday: (goalDoneRes.data ?? []).map((r: any) => r.mission_slug),
       isAdmin,
     };
   });
@@ -311,5 +319,39 @@ export const completeOnboarding = createServerFn({ method: "POST" })
 
     return { ok: true, baseline, cpi };
   });
+
+export const completeGoalMission = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d) => z.object({ slug: z.string().min(1).max(80) }).parse(d))
+  .handler(async ({ data, context }) => {
+    const { userId } = context;
+    const { GOAL_TRACKS } = await import("@/lib/goal-tracks");
+    const allMissions = Object.values(GOAL_TRACKS).flatMap((t) => t.missions);
+    const mission = allMissions.find((m) => m.slug === data.slug);
+    if (!mission) throw new Error("Unknown goal mission");
+
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const todayIso = new Date().toISOString().slice(0, 10);
+
+    const { error: insErr } = await supabaseAdmin
+      .from("goal_mission_completions")
+      .insert({ user_id: userId, mission_slug: mission.slug, completed_on: todayIso, xp_awarded: mission.xp });
+    if (insErr) {
+      // duplicate -> already done today
+      if ((insErr as any).code === "23505") return { alreadyDone: true };
+      throw new Error(insErr.message);
+    }
+
+    const { error: rpcErr } = await supabaseAdmin.rpc("award_xp", {
+      _user_id: userId,
+      _amount: mission.xp,
+      _source: `goal_mission:${mission.slug}`,
+      _coins: mission.coins,
+    });
+    if (rpcErr) throw new Error(rpcErr.message);
+
+    return { alreadyDone: false, xp: mission.xp, coins: mission.coins };
+  });
+
 
 
