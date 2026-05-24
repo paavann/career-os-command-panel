@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import {
   LayoutDashboard, Compass, Sparkles, GraduationCap, Users, CalendarDays,
-  Trophy, User, Crown, Flame, Coins, Zap, Shield, LogOut,
+  Trophy, User, Crown, Flame, Coins, Zap, LogOut,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { getMe } from "@/lib/me.functions";
