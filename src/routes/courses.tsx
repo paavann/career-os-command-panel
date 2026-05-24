@@ -3,7 +3,7 @@ import { Play, Lock } from "lucide-react";
 import { PageHeader } from "./tools/index";
 
 export const Route = createFileRoute("/courses")({
-  head: () => ({ meta: [{ title: "Learning Hub — Bluechip Bluechip CareerOS™" }] }),
+  head: () => ({ meta: [{ title: "Learning Hub — Bluechip CareerOS™" }] }),
   component: Courses,
 });
 

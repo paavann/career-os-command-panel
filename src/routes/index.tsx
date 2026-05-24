@@ -7,7 +7,7 @@ import {
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Command Center — Bluechip Bluechip CareerOS™" },
+      { title: "Command Center — Bluechip CareerOS™" },
       { name: "description", content: "Your Career Freedom Command Center. Track your Career Power Index, missions, and growth opportunities." },
     ],
   }),

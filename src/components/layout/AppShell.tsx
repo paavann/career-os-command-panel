@@ -88,7 +88,7 @@ function TopBar() {
       <div className="px-6 py-3 flex items-center justify-between gap-4">
         <div className="lg:hidden flex items-center gap-2">
           <div className="size-7 rounded-md bg-gradient-brand grid place-items-center font-display font-black text-xs">C</div>
-          <span className="font-display font-extrabold tracking-tight">Bluechip Bluechip CareerOS™</span>
+          <span className="font-display font-extrabold tracking-tight">Bluechip CareerOS™</span>
         </div>
         <div className="flex items-center gap-2 ml-auto">
           <Pill icon={<span className="size-2 rounded-full bg-gold shadow-glow-gold" />} label="LVL 12" />

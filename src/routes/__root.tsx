@@ -18,7 +18,7 @@ function NotFoundComponent() {
         <h1 className="text-7xl font-display font-black text-gradient-brand">404</h1>
         <h2 className="mt-4 text-xl font-semibold">Signal lost</h2>
         <p className="mt-2 text-sm text-muted-foreground">
-          That coordinate doesn't exist in the Bluechip Bluechip CareerOS™ grid.
+          That coordinate doesn't exist in the Bluechip CareerOS™ grid.
         </p>
         <Link
           to="/"
@@ -55,10 +55,10 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Bluechip Bluechip CareerOS™ — Build Your Career Market Power" },
+      { title: "Bluechip CareerOS™ — Build Your Career Market Power" },
       { name: "description", content: "The AI-powered gamified career transformation operating system. Build authority, visibility, and revenue with the C.A.R.E.E.R.™ Framework." },
       { name: "author", content: "Bluechip CareerOS" },
-      { property: "og:title", content: "Bluechip Bluechip CareerOS™ — Your Career Freedom Command Center" },
+      { property: "og:title", content: "Bluechip CareerOS™ — Your Career Freedom Command Center" },
       { property: "og:description", content: "An AI-powered career transformation OS. Become impossible to ignore." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
