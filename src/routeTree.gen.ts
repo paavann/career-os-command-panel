@@ -20,11 +20,16 @@ import { Route as AuthenticatedJourneyRouteImport } from './routes/_authenticate
 import { Route as AuthenticatedEventsRouteImport } from './routes/_authenticated/events'
 import { Route as AuthenticatedCoursesRouteImport } from './routes/_authenticated/courses'
 import { Route as AuthenticatedCommunityRouteImport } from './routes/_authenticated/community'
+import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 import { Route as AuthenticatedToolsIndexRouteImport } from './routes/_authenticated/tools/index'
 import { Route as AuthenticatedAiIndexRouteImport } from './routes/_authenticated/ai/index'
+import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin/index'
 import { Route as ApiAiChatRouteImport } from './routes/api/ai/chat'
 import { Route as AuthenticatedToolsSlugRouteImport } from './routes/_authenticated/tools/$slug'
 import { Route as AuthenticatedAiSlugRouteImport } from './routes/_authenticated/ai/$slug'
+import { Route as AuthenticatedAdminUsersRouteImport } from './routes/_authenticated/admin/users'
+import { Route as AuthenticatedAdminMissionsRouteImport } from './routes/_authenticated/admin/missions'
+import { Route as AuthenticatedAdminAiUsageRouteImport } from './routes/_authenticated/admin/ai-usage'
 
 const SignupRoute = SignupRouteImport.update({
   id: '/signup',
@@ -80,6 +85,11 @@ const AuthenticatedCommunityRoute = AuthenticatedCommunityRouteImport.update({
   path: '/community',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
+const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
 const AuthenticatedToolsIndexRoute = AuthenticatedToolsIndexRouteImport.update({
   id: '/tools/',
   path: '/tools/',
@@ -89,6 +99,11 @@ const AuthenticatedAiIndexRoute = AuthenticatedAiIndexRouteImport.update({
   id: '/ai/',
   path: '/ai/',
   getParentRoute: () => AuthenticatedRoute,
+} as any)
+const AuthenticatedAdminIndexRoute = AuthenticatedAdminIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AuthenticatedAdminRoute,
 } as any)
 const ApiAiChatRoute = ApiAiChatRouteImport.update({
   id: '/api/ai/chat',
@@ -105,11 +120,29 @@ const AuthenticatedAiSlugRoute = AuthenticatedAiSlugRouteImport.update({
   path: '/ai/$slug',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
+const AuthenticatedAdminUsersRoute = AuthenticatedAdminUsersRouteImport.update({
+  id: '/users',
+  path: '/users',
+  getParentRoute: () => AuthenticatedAdminRoute,
+} as any)
+const AuthenticatedAdminMissionsRoute =
+  AuthenticatedAdminMissionsRouteImport.update({
+    id: '/missions',
+    path: '/missions',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
+const AuthenticatedAdminAiUsageRoute =
+  AuthenticatedAdminAiUsageRouteImport.update({
+    id: '/ai-usage',
+    path: '/ai-usage',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof AuthenticatedIndexRoute
   '/login': typeof LoginRoute
   '/signup': typeof SignupRoute
+  '/admin': typeof AuthenticatedAdminRouteWithChildren
   '/community': typeof AuthenticatedCommunityRoute
   '/courses': typeof AuthenticatedCoursesRoute
   '/events': typeof AuthenticatedEventsRoute
@@ -117,9 +150,13 @@ export interface FileRoutesByFullPath {
   '/missions': typeof AuthenticatedMissionsRoute
   '/pricing': typeof AuthenticatedPricingRoute
   '/profile': typeof AuthenticatedProfileRoute
+  '/admin/ai-usage': typeof AuthenticatedAdminAiUsageRoute
+  '/admin/missions': typeof AuthenticatedAdminMissionsRoute
+  '/admin/users': typeof AuthenticatedAdminUsersRoute
   '/ai/$slug': typeof AuthenticatedAiSlugRoute
   '/tools/$slug': typeof AuthenticatedToolsSlugRoute
   '/api/ai/chat': typeof ApiAiChatRoute
+  '/admin/': typeof AuthenticatedAdminIndexRoute
   '/ai/': typeof AuthenticatedAiIndexRoute
   '/tools/': typeof AuthenticatedToolsIndexRoute
 }
@@ -134,9 +171,13 @@ export interface FileRoutesByTo {
   '/pricing': typeof AuthenticatedPricingRoute
   '/profile': typeof AuthenticatedProfileRoute
   '/': typeof AuthenticatedIndexRoute
+  '/admin/ai-usage': typeof AuthenticatedAdminAiUsageRoute
+  '/admin/missions': typeof AuthenticatedAdminMissionsRoute
+  '/admin/users': typeof AuthenticatedAdminUsersRoute
   '/ai/$slug': typeof AuthenticatedAiSlugRoute
   '/tools/$slug': typeof AuthenticatedToolsSlugRoute
   '/api/ai/chat': typeof ApiAiChatRoute
+  '/admin': typeof AuthenticatedAdminIndexRoute
   '/ai': typeof AuthenticatedAiIndexRoute
   '/tools': typeof AuthenticatedToolsIndexRoute
 }
@@ -145,6 +186,7 @@ export interface FileRoutesById {
   '/_authenticated': typeof AuthenticatedRouteWithChildren
   '/login': typeof LoginRoute
   '/signup': typeof SignupRoute
+  '/_authenticated/admin': typeof AuthenticatedAdminRouteWithChildren
   '/_authenticated/community': typeof AuthenticatedCommunityRoute
   '/_authenticated/courses': typeof AuthenticatedCoursesRoute
   '/_authenticated/events': typeof AuthenticatedEventsRoute
@@ -153,9 +195,13 @@ export interface FileRoutesById {
   '/_authenticated/pricing': typeof AuthenticatedPricingRoute
   '/_authenticated/profile': typeof AuthenticatedProfileRoute
   '/_authenticated/': typeof AuthenticatedIndexRoute
+  '/_authenticated/admin/ai-usage': typeof AuthenticatedAdminAiUsageRoute
+  '/_authenticated/admin/missions': typeof AuthenticatedAdminMissionsRoute
+  '/_authenticated/admin/users': typeof AuthenticatedAdminUsersRoute
   '/_authenticated/ai/$slug': typeof AuthenticatedAiSlugRoute
   '/_authenticated/tools/$slug': typeof AuthenticatedToolsSlugRoute
   '/api/ai/chat': typeof ApiAiChatRoute
+  '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
   '/_authenticated/ai/': typeof AuthenticatedAiIndexRoute
   '/_authenticated/tools/': typeof AuthenticatedToolsIndexRoute
 }
@@ -165,6 +211,7 @@ export interface FileRouteTypes {
     | '/'
     | '/login'
     | '/signup'
+    | '/admin'
     | '/community'
     | '/courses'
     | '/events'
@@ -172,9 +219,13 @@ export interface FileRouteTypes {
     | '/missions'
     | '/pricing'
     | '/profile'
+    | '/admin/ai-usage'
+    | '/admin/missions'
+    | '/admin/users'
     | '/ai/$slug'
     | '/tools/$slug'
     | '/api/ai/chat'
+    | '/admin/'
     | '/ai/'
     | '/tools/'
   fileRoutesByTo: FileRoutesByTo
@@ -189,9 +240,13 @@ export interface FileRouteTypes {
     | '/pricing'
     | '/profile'
     | '/'
+    | '/admin/ai-usage'
+    | '/admin/missions'
+    | '/admin/users'
     | '/ai/$slug'
     | '/tools/$slug'
     | '/api/ai/chat'
+    | '/admin'
     | '/ai'
     | '/tools'
   id:
@@ -199,6 +254,7 @@ export interface FileRouteTypes {
     | '/_authenticated'
     | '/login'
     | '/signup'
+    | '/_authenticated/admin'
     | '/_authenticated/community'
     | '/_authenticated/courses'
     | '/_authenticated/events'
@@ -207,9 +263,13 @@ export interface FileRouteTypes {
     | '/_authenticated/pricing'
     | '/_authenticated/profile'
     | '/_authenticated/'
+    | '/_authenticated/admin/ai-usage'
+    | '/_authenticated/admin/missions'
+    | '/_authenticated/admin/users'
     | '/_authenticated/ai/$slug'
     | '/_authenticated/tools/$slug'
     | '/api/ai/chat'
+    | '/_authenticated/admin/'
     | '/_authenticated/ai/'
     | '/_authenticated/tools/'
   fileRoutesById: FileRoutesById
@@ -300,6 +360,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedCommunityRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/admin': {
+      id: '/_authenticated/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AuthenticatedAdminRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/tools/': {
       id: '/_authenticated/tools/'
       path: '/tools'
@@ -313,6 +380,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/ai/'
       preLoaderRoute: typeof AuthenticatedAiIndexRouteImport
       parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/admin/': {
+      id: '/_authenticated/admin/'
+      path: '/'
+      fullPath: '/admin/'
+      preLoaderRoute: typeof AuthenticatedAdminIndexRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
     }
     '/api/ai/chat': {
       id: '/api/ai/chat'
@@ -335,10 +409,49 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAiSlugRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/admin/users': {
+      id: '/_authenticated/admin/users'
+      path: '/users'
+      fullPath: '/admin/users'
+      preLoaderRoute: typeof AuthenticatedAdminUsersRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/_authenticated/admin/missions': {
+      id: '/_authenticated/admin/missions'
+      path: '/missions'
+      fullPath: '/admin/missions'
+      preLoaderRoute: typeof AuthenticatedAdminMissionsRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/_authenticated/admin/ai-usage': {
+      id: '/_authenticated/admin/ai-usage'
+      path: '/ai-usage'
+      fullPath: '/admin/ai-usage'
+      preLoaderRoute: typeof AuthenticatedAdminAiUsageRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
   }
 }
 
+interface AuthenticatedAdminRouteChildren {
+  AuthenticatedAdminAiUsageRoute: typeof AuthenticatedAdminAiUsageRoute
+  AuthenticatedAdminMissionsRoute: typeof AuthenticatedAdminMissionsRoute
+  AuthenticatedAdminUsersRoute: typeof AuthenticatedAdminUsersRoute
+  AuthenticatedAdminIndexRoute: typeof AuthenticatedAdminIndexRoute
+}
+
+const AuthenticatedAdminRouteChildren: AuthenticatedAdminRouteChildren = {
+  AuthenticatedAdminAiUsageRoute: AuthenticatedAdminAiUsageRoute,
+  AuthenticatedAdminMissionsRoute: AuthenticatedAdminMissionsRoute,
+  AuthenticatedAdminUsersRoute: AuthenticatedAdminUsersRoute,
+  AuthenticatedAdminIndexRoute: AuthenticatedAdminIndexRoute,
+}
+
+const AuthenticatedAdminRouteWithChildren =
+  AuthenticatedAdminRoute._addFileChildren(AuthenticatedAdminRouteChildren)
+
 interface AuthenticatedRouteChildren {
+  AuthenticatedAdminRoute: typeof AuthenticatedAdminRouteWithChildren
   AuthenticatedCommunityRoute: typeof AuthenticatedCommunityRoute
   AuthenticatedCoursesRoute: typeof AuthenticatedCoursesRoute
   AuthenticatedEventsRoute: typeof AuthenticatedEventsRoute
@@ -354,6 +467,7 @@ interface AuthenticatedRouteChildren {
 }
 
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
+  AuthenticatedAdminRoute: AuthenticatedAdminRouteWithChildren,
   AuthenticatedCommunityRoute: AuthenticatedCommunityRoute,
   AuthenticatedCoursesRoute: AuthenticatedCoursesRoute,
   AuthenticatedEventsRoute: AuthenticatedEventsRoute,
@@ -381,3 +495,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
