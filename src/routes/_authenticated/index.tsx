@@ -8,6 +8,7 @@ import {
 import { toast } from "sonner";
 import { useMe } from "@/components/layout/AppShell";
 import { completeMission, getLeaderboard } from "@/lib/me.functions";
+import { TodaysBrief } from "@/components/dashboard/TodaysBrief";
 
 export const Route = createFileRoute("/_authenticated/")({
   head: () => ({
