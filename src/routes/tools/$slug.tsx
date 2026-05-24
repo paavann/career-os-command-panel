@@ -53,7 +53,7 @@ function ToolDetail() {
         <div className="md:col-span-2 glass rounded-2xl p-6">
           <h2 className="font-semibold flex items-center gap-2"><Sparkles className="size-4 text-electric" /> Engine outputs</h2>
           <div className="grid sm:grid-cols-2 gap-3 mt-5">
-            {tool.outputs.map((o) => (
+            {tool.outputs.map((o: string) => (
               <div key={o} className="flex items-center gap-3 p-3 rounded-lg bg-accent/30 border border-border">
                 <CheckCircle2 className="size-4 text-electric shrink-0" />
                 <span className="text-sm">{o}</span>
