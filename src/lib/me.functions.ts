@@ -55,18 +55,21 @@ export const getMe = createServerFn({ method: "GET" })
       supabase.from("user_roles").select("role").eq("user_id", userId),
     ]);
 
-    const profile = profileRes.data ?? {
+    const profile = (profileRes.data ?? {
       id: userId,
       display_name: "Operator",
+      first_name: null,
+      last_name: null,
       avatar_url: null,
       headline: null,
+      onboarding_completed: false,
       level: 1,
       xp: 0,
       coins: 0,
       streak_days: 0,
       cpi_score: 0,
       tier: "L1",
-    };
+    }) as any;
     const scores = scoresRes.data ?? {
       clarity: 0, authority: 0, reach: 0, evidence: 0, energy: 0, revenue: 0,
     };
