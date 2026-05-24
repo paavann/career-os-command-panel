@@ -109,6 +109,33 @@ export type Database = {
         }
         Relationships: []
       }
+      goal_mission_completions: {
+        Row: {
+          completed_on: string
+          created_at: string
+          id: string
+          mission_slug: string
+          user_id: string
+          xp_awarded: number
+        }
+        Insert: {
+          completed_on?: string
+          created_at?: string
+          id?: string
+          mission_slug: string
+          user_id: string
+          xp_awarded?: number
+        }
+        Update: {
+          completed_on?: string
+          created_at?: string
+          id?: string
+          mission_slug?: string
+          user_id?: string
+          xp_awarded?: number
+        }
+        Relationships: []
+      }
       missions: {
         Row: {
           active: boolean
