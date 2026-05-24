@@ -20,8 +20,8 @@ import { Route as AuthenticatedJourneyRouteImport } from './routes/_authenticate
 import { Route as AuthenticatedEventsRouteImport } from './routes/_authenticated/events'
 import { Route as AuthenticatedCoursesRouteImport } from './routes/_authenticated/courses'
 import { Route as AuthenticatedCommunityRouteImport } from './routes/_authenticated/community'
-import { Route as AuthenticatedAiRouteImport } from './routes/_authenticated/ai'
 import { Route as AuthenticatedToolsIndexRouteImport } from './routes/_authenticated/tools/index'
+import { Route as AuthenticatedAiIndexRouteImport } from './routes/_authenticated/ai/index'
 import { Route as ApiAiChatRouteImport } from './routes/api/ai/chat'
 import { Route as AuthenticatedToolsSlugRouteImport } from './routes/_authenticated/tools/$slug'
 import { Route as AuthenticatedAiSlugRouteImport } from './routes/_authenticated/ai/$slug'
@@ -80,14 +80,14 @@ const AuthenticatedCommunityRoute = AuthenticatedCommunityRouteImport.update({
   path: '/community',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
-const AuthenticatedAiRoute = AuthenticatedAiRouteImport.update({
-  id: '/ai',
-  path: '/ai',
-  getParentRoute: () => AuthenticatedRoute,
-} as any)
 const AuthenticatedToolsIndexRoute = AuthenticatedToolsIndexRouteImport.update({
   id: '/tools/',
   path: '/tools/',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+const AuthenticatedAiIndexRoute = AuthenticatedAiIndexRouteImport.update({
+  id: '/ai/',
+  path: '/ai/',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
 const ApiAiChatRoute = ApiAiChatRouteImport.update({
@@ -101,16 +101,15 @@ const AuthenticatedToolsSlugRoute = AuthenticatedToolsSlugRouteImport.update({
   getParentRoute: () => AuthenticatedRoute,
 } as any)
 const AuthenticatedAiSlugRoute = AuthenticatedAiSlugRouteImport.update({
-  id: '/$slug',
-  path: '/$slug',
-  getParentRoute: () => AuthenticatedAiRoute,
+  id: '/ai/$slug',
+  path: '/ai/$slug',
+  getParentRoute: () => AuthenticatedRoute,
 } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof AuthenticatedIndexRoute
   '/login': typeof LoginRoute
   '/signup': typeof SignupRoute
-  '/ai': typeof AuthenticatedAiRouteWithChildren
   '/community': typeof AuthenticatedCommunityRoute
   '/courses': typeof AuthenticatedCoursesRoute
   '/events': typeof AuthenticatedEventsRoute
@@ -121,12 +120,12 @@ export interface FileRoutesByFullPath {
   '/ai/$slug': typeof AuthenticatedAiSlugRoute
   '/tools/$slug': typeof AuthenticatedToolsSlugRoute
   '/api/ai/chat': typeof ApiAiChatRoute
+  '/ai/': typeof AuthenticatedAiIndexRoute
   '/tools/': typeof AuthenticatedToolsIndexRoute
 }
 export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/signup': typeof SignupRoute
-  '/ai': typeof AuthenticatedAiRouteWithChildren
   '/community': typeof AuthenticatedCommunityRoute
   '/courses': typeof AuthenticatedCoursesRoute
   '/events': typeof AuthenticatedEventsRoute
@@ -138,6 +137,7 @@ export interface FileRoutesByTo {
   '/ai/$slug': typeof AuthenticatedAiSlugRoute
   '/tools/$slug': typeof AuthenticatedToolsSlugRoute
   '/api/ai/chat': typeof ApiAiChatRoute
+  '/ai': typeof AuthenticatedAiIndexRoute
   '/tools': typeof AuthenticatedToolsIndexRoute
 }
 export interface FileRoutesById {
@@ -145,7 +145,6 @@ export interface FileRoutesById {
   '/_authenticated': typeof AuthenticatedRouteWithChildren
   '/login': typeof LoginRoute
   '/signup': typeof SignupRoute
-  '/_authenticated/ai': typeof AuthenticatedAiRouteWithChildren
   '/_authenticated/community': typeof AuthenticatedCommunityRoute
   '/_authenticated/courses': typeof AuthenticatedCoursesRoute
   '/_authenticated/events': typeof AuthenticatedEventsRoute
@@ -157,6 +156,7 @@ export interface FileRoutesById {
   '/_authenticated/ai/$slug': typeof AuthenticatedAiSlugRoute
   '/_authenticated/tools/$slug': typeof AuthenticatedToolsSlugRoute
   '/api/ai/chat': typeof ApiAiChatRoute
+  '/_authenticated/ai/': typeof AuthenticatedAiIndexRoute
   '/_authenticated/tools/': typeof AuthenticatedToolsIndexRoute
 }
 export interface FileRouteTypes {
@@ -165,7 +165,6 @@ export interface FileRouteTypes {
     | '/'
     | '/login'
     | '/signup'
-    | '/ai'
     | '/community'
     | '/courses'
     | '/events'
@@ -176,12 +175,12 @@ export interface FileRouteTypes {
     | '/ai/$slug'
     | '/tools/$slug'
     | '/api/ai/chat'
+    | '/ai/'
     | '/tools/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/login'
     | '/signup'
-    | '/ai'
     | '/community'
     | '/courses'
     | '/events'
@@ -193,13 +192,13 @@ export interface FileRouteTypes {
     | '/ai/$slug'
     | '/tools/$slug'
     | '/api/ai/chat'
+    | '/ai'
     | '/tools'
   id:
     | '__root__'
     | '/_authenticated'
     | '/login'
     | '/signup'
-    | '/_authenticated/ai'
     | '/_authenticated/community'
     | '/_authenticated/courses'
     | '/_authenticated/events'
@@ -211,6 +210,7 @@ export interface FileRouteTypes {
     | '/_authenticated/ai/$slug'
     | '/_authenticated/tools/$slug'
     | '/api/ai/chat'
+    | '/_authenticated/ai/'
     | '/_authenticated/tools/'
   fileRoutesById: FileRoutesById
 }
@@ -300,18 +300,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedCommunityRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
-    '/_authenticated/ai': {
-      id: '/_authenticated/ai'
-      path: '/ai'
-      fullPath: '/ai'
-      preLoaderRoute: typeof AuthenticatedAiRouteImport
-      parentRoute: typeof AuthenticatedRoute
-    }
     '/_authenticated/tools/': {
       id: '/_authenticated/tools/'
       path: '/tools'
       fullPath: '/tools/'
       preLoaderRoute: typeof AuthenticatedToolsIndexRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/ai/': {
+      id: '/_authenticated/ai/'
+      path: '/ai'
+      fullPath: '/ai/'
+      preLoaderRoute: typeof AuthenticatedAiIndexRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
     '/api/ai/chat': {
@@ -330,28 +330,15 @@ declare module '@tanstack/react-router' {
     }
     '/_authenticated/ai/$slug': {
       id: '/_authenticated/ai/$slug'
-      path: '/$slug'
+      path: '/ai/$slug'
       fullPath: '/ai/$slug'
       preLoaderRoute: typeof AuthenticatedAiSlugRouteImport
-      parentRoute: typeof AuthenticatedAiRoute
+      parentRoute: typeof AuthenticatedRoute
     }
   }
 }
 
-interface AuthenticatedAiRouteChildren {
-  AuthenticatedAiSlugRoute: typeof AuthenticatedAiSlugRoute
-}
-
-const AuthenticatedAiRouteChildren: AuthenticatedAiRouteChildren = {
-  AuthenticatedAiSlugRoute: AuthenticatedAiSlugRoute,
-}
-
-const AuthenticatedAiRouteWithChildren = AuthenticatedAiRoute._addFileChildren(
-  AuthenticatedAiRouteChildren,
-)
-
 interface AuthenticatedRouteChildren {
-  AuthenticatedAiRoute: typeof AuthenticatedAiRouteWithChildren
   AuthenticatedCommunityRoute: typeof AuthenticatedCommunityRoute
   AuthenticatedCoursesRoute: typeof AuthenticatedCoursesRoute
   AuthenticatedEventsRoute: typeof AuthenticatedEventsRoute
@@ -360,12 +347,13 @@ interface AuthenticatedRouteChildren {
   AuthenticatedPricingRoute: typeof AuthenticatedPricingRoute
   AuthenticatedProfileRoute: typeof AuthenticatedProfileRoute
   AuthenticatedIndexRoute: typeof AuthenticatedIndexRoute
+  AuthenticatedAiSlugRoute: typeof AuthenticatedAiSlugRoute
   AuthenticatedToolsSlugRoute: typeof AuthenticatedToolsSlugRoute
+  AuthenticatedAiIndexRoute: typeof AuthenticatedAiIndexRoute
   AuthenticatedToolsIndexRoute: typeof AuthenticatedToolsIndexRoute
 }
 
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
-  AuthenticatedAiRoute: AuthenticatedAiRouteWithChildren,
   AuthenticatedCommunityRoute: AuthenticatedCommunityRoute,
   AuthenticatedCoursesRoute: AuthenticatedCoursesRoute,
   AuthenticatedEventsRoute: AuthenticatedEventsRoute,
@@ -374,7 +362,9 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedPricingRoute: AuthenticatedPricingRoute,
   AuthenticatedProfileRoute: AuthenticatedProfileRoute,
   AuthenticatedIndexRoute: AuthenticatedIndexRoute,
+  AuthenticatedAiSlugRoute: AuthenticatedAiSlugRoute,
   AuthenticatedToolsSlugRoute: AuthenticatedToolsSlugRoute,
+  AuthenticatedAiIndexRoute: AuthenticatedAiIndexRoute,
   AuthenticatedToolsIndexRoute: AuthenticatedToolsIndexRoute,
 }
 
