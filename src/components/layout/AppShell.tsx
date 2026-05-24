@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import {
   LayoutDashboard, Compass, Sparkles, GraduationCap, Users, CalendarDays,
-  Trophy, User, Crown, Flame, Coins, Zap, LogOut,
+  Trophy, User, Crown, Flame, Coins, Zap, LogOut, Shield,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { getMe } from "@/lib/me.functions";
@@ -37,7 +37,9 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   const { data } = useMe();
   const navigate = useNavigate();
 
-  const nav = baseNav;
+  const nav: NavItem[] = data?.isAdmin
+    ? [...baseNav, { to: "/admin", label: "Admin", icon: Shield }]
+    : baseNav;
 
   return (
     <div className="min-h-screen bg-background text-foreground flex">
