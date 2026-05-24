@@ -145,45 +145,75 @@ export type Database = {
       profiles: {
         Row: {
           avatar_url: string | null
+          biggest_challenge: string | null
           coins: number
           cpi_score: number
           created_at: string
           display_name: string
+          first_name: string | null
           headline: string | null
           id: string
+          industry: string | null
+          job_title: string | null
           last_active_date: string | null
+          last_name: string | null
+          last_promotion: string | null
           level: number
+          linkedin_status: string | null
+          onboarding_completed: boolean
+          primary_goal: string | null
           streak_days: number
+          target_timeline: string | null
           tier: string
           updated_at: string
           xp: number
         }
         Insert: {
           avatar_url?: string | null
+          biggest_challenge?: string | null
           coins?: number
           cpi_score?: number
           created_at?: string
           display_name?: string
+          first_name?: string | null
           headline?: string | null
           id: string
+          industry?: string | null
+          job_title?: string | null
           last_active_date?: string | null
+          last_name?: string | null
+          last_promotion?: string | null
           level?: number
+          linkedin_status?: string | null
+          onboarding_completed?: boolean
+          primary_goal?: string | null
           streak_days?: number
+          target_timeline?: string | null
           tier?: string
           updated_at?: string
           xp?: number
         }
         Update: {
           avatar_url?: string | null
+          biggest_challenge?: string | null
           coins?: number
           cpi_score?: number
           created_at?: string
           display_name?: string
+          first_name?: string | null
           headline?: string | null
           id?: string
+          industry?: string | null
+          job_title?: string | null
           last_active_date?: string | null
+          last_name?: string | null
+          last_promotion?: string | null
           level?: number
+          linkedin_status?: string | null
+          onboarding_completed?: boolean
+          primary_goal?: string | null
           streak_days?: number
+          target_timeline?: string | null
           tier?: string
           updated_at?: string
           xp?: number

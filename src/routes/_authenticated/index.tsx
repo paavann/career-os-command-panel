@@ -81,7 +81,7 @@ function Dashboard() {
           Intelligence Briefing · {new Date().toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" })}
         </p>
         <h1 className="text-4xl md:text-5xl font-display font-extrabold tracking-tight">
-          Welcome back, {p.display_name.split(" ")[0]}.
+          Welcome back, {p.first_name?.trim() || p.display_name?.split(" ")[0] || "Operator"}.
         </h1>
         <p className="text-base md:text-lg text-muted-foreground mt-2 max-w-2xl">
           Your Career Freedom Command Center is online. Level <span className="text-foreground font-semibold">{p.level}</span> · {p.tier} tier · {p.streak_days}-day streak.

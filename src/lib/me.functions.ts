@@ -6,8 +6,11 @@ export type MeData = {
   profile: {
     id: string;
     display_name: string;
+    first_name: string | null;
+    last_name: string | null;
     avatar_url: string | null;
     headline: string | null;
+    onboarding_completed: boolean;
     level: number;
     xp: number;
     coins: number;
@@ -52,18 +55,21 @@ export const getMe = createServerFn({ method: "GET" })
       supabase.from("user_roles").select("role").eq("user_id", userId),
     ]);
 
-    const profile = profileRes.data ?? {
+    const profile = (profileRes.data ?? {
       id: userId,
       display_name: "Operator",
+      first_name: null,
+      last_name: null,
       avatar_url: null,
       headline: null,
+      onboarding_completed: false,
       level: 1,
       xp: 0,
       coins: 0,
       streak_days: 0,
       cpi_score: 0,
       tier: "L1",
-    };
+    }) as any;
     const scores = scoresRes.data ?? {
       clarity: 0, authority: 0, reach: 0, evidence: 0, energy: 0, revenue: 0,
     };
@@ -86,8 +92,11 @@ export const getMe = createServerFn({ method: "GET" })
       profile: {
         id: profile.id,
         display_name: profile.display_name,
+        first_name: profile.first_name ?? null,
+        last_name: profile.last_name ?? null,
         avatar_url: profile.avatar_url,
         headline: profile.headline,
+        onboarding_completed: profile.onboarding_completed ?? false,
         level: profile.level,
         xp: profile.xp,
         coins: profile.coins,
@@ -173,4 +182,122 @@ export const getLeaderboard = createServerFn({ method: "GET" })
     if (error) throw new Error(error.message);
     return { rows: data ?? [], me: userId };
   });
+
+const onboardingSchema = z.object({
+  first_name: z.string().trim().min(1).max(80),
+  last_name: z.string().trim().min(1).max(80),
+  job_title: z.string().trim().min(1).max(120),
+  industry: z.enum(["Tech", "BFSI", "Consulting", "Manufacturing", "Healthcare", "Other"]),
+  primary_goal: z.enum([
+    "Get promoted",
+    "Find a new job",
+    "Get a salary raise",
+    "Build external visibility",
+    "Grow my consulting income",
+  ]),
+  biggest_challenge: z.enum([
+    "Invisible to leadership",
+    "Stuck in same role 3+ years",
+    "Job search not converting",
+    "No personal brand online",
+    "Can't negotiate my worth",
+  ]),
+  target_timeline: z.enum(["3 months", "6 months", "12 months"]),
+  linkedin_status: z.enum(["Active", "Needs work", "Not started"]),
+  last_promotion: z.enum(["Within 1 year", "1–3 years", "3+ years", "Never promoted here"]),
+});
+
+function computeBaseline(d: z.infer<typeof onboardingSchema>) {
+  // Each dim is 0-25 baseline
+  let clarity = 5, authority = 5, reach = 5, evidence = 5, energy = 10, revenue = 5;
+
+  // LinkedIn drives Reach
+  if (d.linkedin_status === "Active") reach = 20;
+  else if (d.linkedin_status === "Needs work") reach = 10;
+  else reach = 3;
+
+  // Last promotion drives Clarity + Revenue
+  if (d.last_promotion === "Within 1 year") { clarity = 20; revenue = 18; }
+  else if (d.last_promotion === "1–3 years") { clarity = 15; revenue = 12; }
+  else if (d.last_promotion === "3+ years") { clarity = 10; revenue = 5; }
+  else { clarity = 7; revenue = 4; }
+
+  // Primary goal nudges
+  switch (d.primary_goal) {
+    case "Get promoted": authority += 8; evidence += 6; break;
+    case "Find a new job": clarity += 5; reach += 4; break;
+    case "Get a salary raise": revenue += 8; evidence += 5; break;
+    case "Build external visibility": reach += 8; authority += 6; break;
+    case "Grow my consulting income": revenue += 10; authority += 5; break;
+  }
+
+  // Challenge subtracts from the weakest area
+  switch (d.biggest_challenge) {
+    case "Invisible to leadership": authority = Math.max(2, authority - 5); break;
+    case "Stuck in same role 3+ years": clarity = Math.max(2, clarity - 4); break;
+    case "Job search not converting": evidence = Math.max(2, evidence - 4); break;
+    case "No personal brand online": reach = Math.max(2, reach - 5); break;
+    case "Can't negotiate my worth": revenue = Math.max(2, revenue - 4); break;
+  }
+
+  // Timeline → urgency boosts Energy
+  if (d.target_timeline === "3 months") energy = 22;
+  else if (d.target_timeline === "6 months") energy = 16;
+  else energy = 12;
+
+  const clamp = (n: number) => Math.max(0, Math.min(25, Math.round(n)));
+  return {
+    clarity: clamp(clarity),
+    authority: clamp(authority),
+    reach: clamp(reach),
+    evidence: clamp(evidence),
+    energy: clamp(energy),
+    revenue: clamp(revenue),
+  };
+}
+
+export const completeOnboarding = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d) => onboardingSchema.parse(d))
+  .handler(async ({ data, context }) => {
+    const { userId } = context;
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+
+    const baseline = computeBaseline(data);
+    const cpi = Math.round(
+      (baseline.clarity + baseline.authority + baseline.reach +
+       baseline.evidence + baseline.energy + baseline.revenue) / 6 * 4,
+    );
+
+    const display_name = `${data.first_name} ${data.last_name}`.trim();
+    const headline = `${data.job_title} · ${data.industry}`;
+
+    const { error: pErr } = await supabaseAdmin
+      .from("profiles")
+      .update({
+        first_name: data.first_name,
+        last_name: data.last_name,
+        display_name,
+        headline,
+        job_title: data.job_title,
+        industry: data.industry,
+        primary_goal: data.primary_goal,
+        biggest_challenge: data.biggest_challenge,
+        target_timeline: data.target_timeline,
+        linkedin_status: data.linkedin_status,
+        last_promotion: data.last_promotion,
+        onboarding_completed: true,
+        cpi_score: cpi,
+      })
+      .eq("id", userId);
+    if (pErr) throw new Error(pErr.message);
+
+    const { error: sErr } = await supabaseAdmin
+      .from("career_scores")
+      .upsert({ user_id: userId, ...baseline, updated_at: new Date().toISOString() }, { onConflict: "user_id" });
+    if (sErr) throw new Error(sErr.message);
+
+    return { ok: true, baseline, cpi };
+  });
+
 
