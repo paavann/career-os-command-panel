@@ -11,6 +11,12 @@ export type MeData = {
     avatar_url: string | null;
     headline: string | null;
     onboarding_completed: boolean;
+    primary_goal: string | null;
+    biggest_challenge: string | null;
+    target_timeline: string | null;
+    linkedin_status: string | null;
+    last_promotion: string | null;
+    created_at: string | null;
     level: number;
     xp: number;
     coins: number;
