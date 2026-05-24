@@ -160,3 +160,17 @@ export const updateProfile = createServerFn({ method: "POST" })
     if (error) throw new Error(error.message);
     return { ok: true };
   });
+
+export const getLeaderboard = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
+    const { supabase, userId } = context;
+    const { data, error } = await supabase
+      .from("profiles")
+      .select("id, display_name, xp, level, tier, streak_days, cpi_score")
+      .order("xp", { ascending: false })
+      .limit(25);
+    if (error) throw new Error(error.message);
+    return { rows: data ?? [], me: userId };
+  });
+
