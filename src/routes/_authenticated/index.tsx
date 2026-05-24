@@ -167,9 +167,14 @@ function Dashboard() {
             {SCORE_KEYS.map((sk) => {
               const v = s[sk.key];
               return (
-                <div key={sk.name} className="space-y-2">
+                <button
+                  key={sk.name}
+                  onClick={() => setOpenEngine(sk.key as PillarKey)}
+                  className="text-left space-y-2 group cursor-pointer"
+                  title={`Open ${sk.name} engine`}
+                >
                   <div className="flex items-center justify-between text-[11px] font-mono uppercase tracking-widest">
-                    <span className="text-muted-foreground">{sk.letter} · {sk.name}</span>
+                    <span className="text-muted-foreground group-hover:text-foreground transition-colors">{sk.letter} · {sk.name}</span>
                     <span className="text-foreground font-semibold">{v}</span>
                   </div>
                   <div className="h-1.5 rounded-full bg-white/5 overflow-hidden">
@@ -178,7 +183,7 @@ function Dashboard() {
                       style={{ width: `${v}%`, boxShadow: sk.tone === "purple" ? "0 0 12px var(--purple)" : "0 0 12px var(--electric)" }}
                     />
                   </div>
-                </div>
+                </button>
               );
             })}
           </div>
