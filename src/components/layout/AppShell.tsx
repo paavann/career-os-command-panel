@@ -37,9 +37,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   const { data } = useMe();
   const navigate = useNavigate();
 
-  const nav = data?.isAdmin
-    ? [...baseNav, { to: "/admin", label: "Admin", icon: Shield, exact: false } as const]
-    : baseNav;
+  const nav = baseNav;
 
   return (
     <div className="min-h-screen bg-background text-foreground flex">
