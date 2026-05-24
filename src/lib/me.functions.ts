@@ -92,8 +92,11 @@ export const getMe = createServerFn({ method: "GET" })
       profile: {
         id: profile.id,
         display_name: profile.display_name,
+        first_name: profile.first_name ?? null,
+        last_name: profile.last_name ?? null,
         avatar_url: profile.avatar_url,
         headline: profile.headline,
+        onboarding_completed: profile.onboarding_completed ?? false,
         level: profile.level,
         xp: profile.xp,
         coins: profile.coins,
