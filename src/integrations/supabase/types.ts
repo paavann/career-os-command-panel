@@ -14,16 +14,229 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      career_scores: {
+        Row: {
+          authority: number
+          clarity: number
+          energy: number
+          evidence: number
+          reach: number
+          revenue: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          authority?: number
+          clarity?: number
+          energy?: number
+          evidence?: number
+          reach?: number
+          revenue?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          authority?: number
+          clarity?: number
+          energy?: number
+          evidence?: number
+          reach?: number
+          revenue?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      missions: {
+        Row: {
+          active: boolean
+          category: string
+          coin_reward: number
+          created_at: string
+          description: string | null
+          id: string
+          title: string
+          xp_reward: number
+        }
+        Insert: {
+          active?: boolean
+          category?: string
+          coin_reward?: number
+          created_at?: string
+          description?: string | null
+          id?: string
+          title: string
+          xp_reward?: number
+        }
+        Update: {
+          active?: boolean
+          category?: string
+          coin_reward?: number
+          created_at?: string
+          description?: string | null
+          id?: string
+          title?: string
+          xp_reward?: number
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          coins: number
+          cpi_score: number
+          created_at: string
+          display_name: string
+          headline: string | null
+          id: string
+          last_active_date: string | null
+          level: number
+          streak_days: number
+          tier: string
+          updated_at: string
+          xp: number
+        }
+        Insert: {
+          avatar_url?: string | null
+          coins?: number
+          cpi_score?: number
+          created_at?: string
+          display_name?: string
+          headline?: string | null
+          id: string
+          last_active_date?: string | null
+          level?: number
+          streak_days?: number
+          tier?: string
+          updated_at?: string
+          xp?: number
+        }
+        Update: {
+          avatar_url?: string | null
+          coins?: number
+          cpi_score?: number
+          created_at?: string
+          display_name?: string
+          headline?: string | null
+          id?: string
+          last_active_date?: string | null
+          level?: number
+          streak_days?: number
+          tier?: string
+          updated_at?: string
+          xp?: number
+        }
+        Relationships: []
+      }
+      user_missions: {
+        Row: {
+          completed_at: string | null
+          created_at: string
+          id: string
+          mission_id: string
+          status: string
+          user_id: string
+        }
+        Insert: {
+          completed_at?: string | null
+          created_at?: string
+          id?: string
+          mission_id: string
+          status?: string
+          user_id: string
+        }
+        Update: {
+          completed_at?: string | null
+          created_at?: string
+          id?: string
+          mission_id?: string
+          status?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_missions_mission_id_fkey"
+            columns: ["mission_id"]
+            isOneToOne: false
+            referencedRelation: "missions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_roles: {
+        Row: {
+          created_at: string
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
+      xp_events: {
+        Row: {
+          amount: number
+          created_at: string
+          id: string
+          source: string
+          user_id: string
+        }
+        Insert: {
+          amount: number
+          created_at?: string
+          id?: string
+          source: string
+          user_id: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          id?: string
+          source?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      award_xp: {
+        Args: {
+          _amount: number
+          _coins?: number
+          _source: string
+          _user_id: string
+        }
+        Returns: {
+          new_coins: number
+          new_level: number
+          new_streak: number
+          new_xp: number
+        }[]
+      }
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "admin" | "member"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +363,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["admin", "member"],
+    },
   },
 } as const
