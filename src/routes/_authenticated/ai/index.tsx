@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { COPILOTS } from "@/lib/copilots";
 import { Brain } from "lucide-react";
-import { PageHeader } from "./tools/index";
+import { PageHeader } from "../tools/index";
 
 export const Route = createFileRoute("/_authenticated/ai/")({
   head: () => ({ meta: [{ title: "AI Hub — Bluechip CareerOS™" }] }),
