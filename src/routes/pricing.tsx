@@ -3,7 +3,7 @@ import { Check } from "lucide-react";
 import { PageHeader } from "./tools/index";
 
 export const Route = createFileRoute("/pricing")({
-  head: () => ({ meta: [{ title: "Membership Tiers — CareerOS™" }] }),
+  head: () => ({ meta: [{ title: "Membership Tiers — Bluechip Bluechip CareerOS™" }] }),
   component: Pricing,
 });
 

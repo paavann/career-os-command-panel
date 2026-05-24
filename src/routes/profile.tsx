@@ -3,7 +3,7 @@ import { Award, Star } from "lucide-react";
 import { PageHeader } from "./tools/index";
 
 export const Route = createFileRoute("/profile")({
-  head: () => ({ meta: [{ title: "Profile — CareerOS™" }] }),
+  head: () => ({ meta: [{ title: "Profile — Bluechip Bluechip CareerOS™" }] }),
   component: Profile,
 });
 

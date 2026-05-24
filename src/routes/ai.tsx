@@ -3,7 +3,7 @@ import { Brain, FileText, Linkedin, MessageSquare, Banknote, Search, Megaphone, 
 import { PageHeader } from "./tools/index";
 
 export const Route = createFileRoute("/ai")({
-  head: () => ({ meta: [{ title: "AI Hub — CareerOS™" }] }),
+  head: () => ({ meta: [{ title: "AI Hub — Bluechip Bluechip CareerOS™" }] }),
   component: AIHub,
 });
 

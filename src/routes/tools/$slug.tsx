@@ -9,7 +9,7 @@ export const Route = createFileRoute("/tools/$slug")({
     return { tool };
   },
   head: ({ loaderData }) => ({
-    meta: [{ title: `${loaderData?.tool.name ?? "Tool"} — CareerOS™` }],
+    meta: [{ title: `${loaderData?.tool.name ?? "Tool"} — Bluechip Bluechip CareerOS™` }],
   }),
   component: ToolDetail,
   notFoundComponent: () => (

@@ -3,7 +3,7 @@ import { CheckCircle2, Lock, Star } from "lucide-react";
 import { PageHeader } from "./tools/index";
 
 export const Route = createFileRoute("/journey")({
-  head: () => ({ meta: [{ title: "Career Journey — CareerOS™" }] }),
+  head: () => ({ meta: [{ title: "Career Journey — Bluechip Bluechip CareerOS™" }] }),
   component: JourneyPage,
 });
 
