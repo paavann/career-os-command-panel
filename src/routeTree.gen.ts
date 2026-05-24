@@ -24,6 +24,7 @@ import { Route as AuthenticatedAiRouteImport } from './routes/_authenticated/ai'
 import { Route as AuthenticatedToolsIndexRouteImport } from './routes/_authenticated/tools/index'
 import { Route as ApiAiChatRouteImport } from './routes/api/ai/chat'
 import { Route as AuthenticatedToolsSlugRouteImport } from './routes/_authenticated/tools/$slug'
+import { Route as AuthenticatedAiSlugRouteImport } from './routes/_authenticated/ai/$slug'
 
 const SignupRoute = SignupRouteImport.update({
   id: '/signup',
@@ -99,12 +100,17 @@ const AuthenticatedToolsSlugRoute = AuthenticatedToolsSlugRouteImport.update({
   path: '/tools/$slug',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
+const AuthenticatedAiSlugRoute = AuthenticatedAiSlugRouteImport.update({
+  id: '/$slug',
+  path: '/$slug',
+  getParentRoute: () => AuthenticatedAiRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof AuthenticatedIndexRoute
   '/login': typeof LoginRoute
   '/signup': typeof SignupRoute
-  '/ai': typeof AuthenticatedAiRoute
+  '/ai': typeof AuthenticatedAiRouteWithChildren
   '/community': typeof AuthenticatedCommunityRoute
   '/courses': typeof AuthenticatedCoursesRoute
   '/events': typeof AuthenticatedEventsRoute
@@ -112,6 +118,7 @@ export interface FileRoutesByFullPath {
   '/missions': typeof AuthenticatedMissionsRoute
   '/pricing': typeof AuthenticatedPricingRoute
   '/profile': typeof AuthenticatedProfileRoute
+  '/ai/$slug': typeof AuthenticatedAiSlugRoute
   '/tools/$slug': typeof AuthenticatedToolsSlugRoute
   '/api/ai/chat': typeof ApiAiChatRoute
   '/tools/': typeof AuthenticatedToolsIndexRoute
@@ -119,7 +126,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/signup': typeof SignupRoute
-  '/ai': typeof AuthenticatedAiRoute
+  '/ai': typeof AuthenticatedAiRouteWithChildren
   '/community': typeof AuthenticatedCommunityRoute
   '/courses': typeof AuthenticatedCoursesRoute
   '/events': typeof AuthenticatedEventsRoute
@@ -128,6 +135,7 @@ export interface FileRoutesByTo {
   '/pricing': typeof AuthenticatedPricingRoute
   '/profile': typeof AuthenticatedProfileRoute
   '/': typeof AuthenticatedIndexRoute
+  '/ai/$slug': typeof AuthenticatedAiSlugRoute
   '/tools/$slug': typeof AuthenticatedToolsSlugRoute
   '/api/ai/chat': typeof ApiAiChatRoute
   '/tools': typeof AuthenticatedToolsIndexRoute
@@ -137,7 +145,7 @@ export interface FileRoutesById {
   '/_authenticated': typeof AuthenticatedRouteWithChildren
   '/login': typeof LoginRoute
   '/signup': typeof SignupRoute
-  '/_authenticated/ai': typeof AuthenticatedAiRoute
+  '/_authenticated/ai': typeof AuthenticatedAiRouteWithChildren
   '/_authenticated/community': typeof AuthenticatedCommunityRoute
   '/_authenticated/courses': typeof AuthenticatedCoursesRoute
   '/_authenticated/events': typeof AuthenticatedEventsRoute
@@ -146,6 +154,7 @@ export interface FileRoutesById {
   '/_authenticated/pricing': typeof AuthenticatedPricingRoute
   '/_authenticated/profile': typeof AuthenticatedProfileRoute
   '/_authenticated/': typeof AuthenticatedIndexRoute
+  '/_authenticated/ai/$slug': typeof AuthenticatedAiSlugRoute
   '/_authenticated/tools/$slug': typeof AuthenticatedToolsSlugRoute
   '/api/ai/chat': typeof ApiAiChatRoute
   '/_authenticated/tools/': typeof AuthenticatedToolsIndexRoute
@@ -164,6 +173,7 @@ export interface FileRouteTypes {
     | '/missions'
     | '/pricing'
     | '/profile'
+    | '/ai/$slug'
     | '/tools/$slug'
     | '/api/ai/chat'
     | '/tools/'
@@ -180,6 +190,7 @@ export interface FileRouteTypes {
     | '/pricing'
     | '/profile'
     | '/'
+    | '/ai/$slug'
     | '/tools/$slug'
     | '/api/ai/chat'
     | '/tools'
@@ -197,6 +208,7 @@ export interface FileRouteTypes {
     | '/_authenticated/pricing'
     | '/_authenticated/profile'
     | '/_authenticated/'
+    | '/_authenticated/ai/$slug'
     | '/_authenticated/tools/$slug'
     | '/api/ai/chat'
     | '/_authenticated/tools/'
@@ -316,11 +328,30 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedToolsSlugRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/ai/$slug': {
+      id: '/_authenticated/ai/$slug'
+      path: '/$slug'
+      fullPath: '/ai/$slug'
+      preLoaderRoute: typeof AuthenticatedAiSlugRouteImport
+      parentRoute: typeof AuthenticatedAiRoute
+    }
   }
 }
 
+interface AuthenticatedAiRouteChildren {
+  AuthenticatedAiSlugRoute: typeof AuthenticatedAiSlugRoute
+}
+
+const AuthenticatedAiRouteChildren: AuthenticatedAiRouteChildren = {
+  AuthenticatedAiSlugRoute: AuthenticatedAiSlugRoute,
+}
+
+const AuthenticatedAiRouteWithChildren = AuthenticatedAiRoute._addFileChildren(
+  AuthenticatedAiRouteChildren,
+)
+
 interface AuthenticatedRouteChildren {
-  AuthenticatedAiRoute: typeof AuthenticatedAiRoute
+  AuthenticatedAiRoute: typeof AuthenticatedAiRouteWithChildren
   AuthenticatedCommunityRoute: typeof AuthenticatedCommunityRoute
   AuthenticatedCoursesRoute: typeof AuthenticatedCoursesRoute
   AuthenticatedEventsRoute: typeof AuthenticatedEventsRoute
@@ -334,7 +365,7 @@ interface AuthenticatedRouteChildren {
 }
 
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
-  AuthenticatedAiRoute: AuthenticatedAiRoute,
+  AuthenticatedAiRoute: AuthenticatedAiRouteWithChildren,
   AuthenticatedCommunityRoute: AuthenticatedCommunityRoute,
   AuthenticatedCoursesRoute: AuthenticatedCoursesRoute,
   AuthenticatedEventsRoute: AuthenticatedEventsRoute,
