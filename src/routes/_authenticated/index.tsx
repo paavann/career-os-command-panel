@@ -84,9 +84,7 @@ function Dashboard() {
         <h1 className="text-4xl md:text-5xl font-display font-extrabold tracking-tight">
           Welcome back, {p.first_name?.trim() || p.display_name?.split(" ")[0] || "Operator"}.
         </h1>
-        <p className="text-base md:text-lg text-muted-foreground mt-2 max-w-2xl">
-          Your Career Freedom Command Center is online. Level <span className="text-foreground font-semibold">{p.level}</span> · {p.tier} tier · {p.streak_days}-day streak.
-        </p>
+        <TodaysBrief data={data} />
       </section>
 
       <section className="grid grid-cols-1 lg:grid-cols-12 gap-6 animate-slide-up [animation-delay:100ms]">
