@@ -247,6 +247,33 @@ export type Database = {
         }
         Relationships: []
       }
+      user_courses: {
+        Row: {
+          completed_modules: number[]
+          course_completed_at: string | null
+          course_slug: string
+          notes: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          completed_modules?: number[]
+          course_completed_at?: string | null
+          course_slug: string
+          notes?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          completed_modules?: number[]
+          course_completed_at?: string | null
+          course_slug?: string
+          notes?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       user_missions: {
         Row: {
           completed_at: string | null
