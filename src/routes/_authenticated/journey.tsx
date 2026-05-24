@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { CheckCircle2, Lock, Star } from "lucide-react";
 import { PageHeader } from "./tools/index";
 
-export const Route = createFileRoute("/journey")({
+export const Route = createFileRoute("/_authenticated/journey")({
   head: () => ({ meta: [{ title: "Career Journey — Bluechip CareerOS™" }] }),
   component: JourneyPage,
 });

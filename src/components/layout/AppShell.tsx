@@ -1,20 +1,16 @@
-import { Link, Outlet, useRouterState } from "@tanstack/react-router";
+import { Link, useRouterState, useNavigate } from "@tanstack/react-router";
+import { useQuery } from "@tanstack/react-query";
+import { useServerFn } from "@tanstack/react-start";
 import {
-  LayoutDashboard,
-  Compass,
-  Sparkles,
-  GraduationCap,
-  Users,
-  CalendarDays,
-  Trophy,
-  User,
-  Crown,
-  Flame,
-  Coins,
-  Zap,
+  LayoutDashboard, Compass, Sparkles, GraduationCap, Users, CalendarDays,
+  Trophy, User, Crown, Flame, Coins, Zap, LogOut,
 } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+import { getMe } from "@/lib/me.functions";
+import { toast } from "sonner";
 
-const nav = [
+type NavItem = { to: string; label: string; icon: typeof LayoutDashboard; exact?: boolean };
+const baseNav: NavItem[] = [
   { to: "/", label: "Command", icon: LayoutDashboard, exact: true },
   { to: "/journey", label: "Journey", icon: Compass },
   { to: "/tools", label: "C.A.R.E.E.R.", icon: Sparkles },
@@ -27,11 +23,24 @@ const nav = [
   { to: "/pricing", label: "Tiers", icon: Crown },
 ];
 
-export function AppShell() {
+export function useMe() {
+  const fetchMe = useServerFn(getMe);
+  return useQuery({
+    queryKey: ["me"],
+    queryFn: () => fetchMe(),
+    staleTime: 30_000,
+  });
+}
+
+export function AppShell({ children }: { children: React.ReactNode }) {
   const { location } = useRouterState();
+  const { data } = useMe();
+  const navigate = useNavigate();
+
+  const nav = baseNav;
+
   return (
     <div className="min-h-screen bg-background text-foreground flex">
-      {/* Sidebar */}
       <aside className="hidden lg:flex w-64 shrink-0 flex-col border-r border-border bg-navy-soft/40 backdrop-blur-xl sticky top-0 h-screen">
         <div className="px-6 py-6">
           <Link to="/" className="flex items-center gap-2">
@@ -42,7 +51,7 @@ export function AppShell() {
             </div>
           </Link>
         </div>
-        <nav className="flex-1 px-3 space-y-0.5">
+        <nav className="flex-1 px-3 space-y-0.5 overflow-y-auto">
           {nav.map((item) => {
             const Icon = item.icon;
             const active = item.exact
@@ -51,7 +60,7 @@ export function AppShell() {
             return (
               <Link
                 key={item.to}
-                to={item.to}
+                to={item.to as any}
                 className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all ${
                   active
                     ? "bg-accent text-foreground ring-1 ring-border"
@@ -67,22 +76,36 @@ export function AppShell() {
         </nav>
         <div className="p-4 m-3 rounded-xl border border-border bg-gradient-to-br from-purple/15 to-electric/10">
           <div className="text-[10px] font-mono uppercase tracking-widest text-muted-foreground">Career Power Index</div>
-          <div className="font-display font-black text-3xl text-gradient-brand">842</div>
-          <div className="text-xs text-muted-foreground mt-1">Top 4% globally</div>
+          <div className="font-display font-black text-3xl text-gradient-brand">{data?.profile.cpi_score ?? 0}</div>
+          <div className="text-xs text-muted-foreground mt-1">{data?.profile.tier ?? "L1"} tier</div>
         </div>
+        <button
+          onClick={async () => {
+            await supabase.auth.signOut();
+            toast.success("Signed out");
+            navigate({ to: "/login" });
+          }}
+          className="mx-3 mb-3 px-3 py-2 rounded-lg text-xs font-medium text-muted-foreground hover:text-foreground hover:bg-accent/50 flex items-center gap-2 transition-colors"
+        >
+          <LogOut className="size-3.5" /> Sign out
+        </button>
       </aside>
 
       <div className="flex-1 min-w-0 flex flex-col">
-        <TopBar />
-        <main className="flex-1">
-          <Outlet />
-        </main>
+        <TopBar
+          level={data?.profile.level ?? 1}
+          xp={data?.profile.xp ?? 0}
+          coins={data?.profile.coins ?? 0}
+          streak={data?.profile.streak_days ?? 0}
+          name={data?.profile.display_name}
+        />
+        <main className="flex-1">{children}</main>
       </div>
     </div>
   );
 }
 
-function TopBar() {
+function TopBar({ level, xp, coins, streak, name }: { level: number; xp: number; coins: number; streak: number; name?: string }) {
   return (
     <header className="sticky top-0 z-40 border-b border-border bg-background/70 backdrop-blur-xl">
       <div className="px-6 py-3 flex items-center justify-between gap-4">
@@ -91,11 +114,16 @@ function TopBar() {
           <span className="font-display font-extrabold tracking-tight">Bluechip CareerOS™</span>
         </div>
         <div className="flex items-center gap-2 ml-auto">
-          <Pill icon={<span className="size-2 rounded-full bg-gold shadow-glow-gold" />} label="LVL 12" />
-          <Pill icon={<Zap className="size-3 text-gold" />} label="4,280 XP" />
-          <Pill icon={<Coins className="size-3 text-electric" />} label="150" />
-          <Pill icon={<Flame className="size-3 text-orange-400" />} label="7 day" />
-          <div className="size-9 rounded-full bg-gradient-to-tr from-purple to-electric ring-2 ring-border ml-1" />
+          <Pill icon={<span className="size-2 rounded-full bg-gold shadow-glow-gold" />} label={`LVL ${level}`} />
+          <Pill icon={<Zap className="size-3 text-gold" />} label={`${xp.toLocaleString()} XP`} />
+          <Pill icon={<Coins className="size-3 text-electric" />} label={String(coins)} />
+          <Pill icon={<Flame className="size-3 text-orange-400" />} label={`${streak} day`} />
+          <div
+            className="size-9 rounded-full bg-gradient-to-tr from-purple to-electric ring-2 ring-border ml-1 grid place-items-center text-[10px] font-bold uppercase"
+            title={name}
+          >
+            {name?.slice(0, 1) ?? "O"}
+          </div>
         </div>
       </div>
     </header>

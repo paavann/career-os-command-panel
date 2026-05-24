@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { Trophy, Flame, MessageCircle, TrendingUp } from "lucide-react";
 import { PageHeader } from "./tools/index";
 
-export const Route = createFileRoute("/community")({
+export const Route = createFileRoute("/_authenticated/community")({
   head: () => ({ meta: [{ title: "Community — Bluechip CareerOS™" }] }),
   component: Community,
 });

@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { Brain, FileText, Linkedin, MessageSquare, Banknote, Search, Megaphone, Compass, Crown } from "lucide-react";
 import { PageHeader } from "./tools/index";
 
-export const Route = createFileRoute("/ai")({
+export const Route = createFileRoute("/_authenticated/ai")({
   head: () => ({ meta: [{ title: "AI Hub — Bluechip CareerOS™" }] }),
   component: AIHub,
 });

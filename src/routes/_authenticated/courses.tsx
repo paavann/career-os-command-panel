@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { Play, Lock } from "lucide-react";
 import { PageHeader } from "./tools/index";
 
-export const Route = createFileRoute("/courses")({
+export const Route = createFileRoute("/_authenticated/courses")({
   head: () => ({ meta: [{ title: "Learning Hub — Bluechip CareerOS™" }] }),
   component: Courses,
 });
