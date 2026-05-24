@@ -320,4 +320,38 @@ export const completeOnboarding = createServerFn({ method: "POST" })
     return { ok: true, baseline, cpi };
   });
 
+export const completeGoalMission = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d) => z.object({ slug: z.string().min(1).max(80) }).parse(d))
+  .handler(async ({ data, context }) => {
+    const { userId } = context;
+    const { GOAL_TRACKS } = await import("@/lib/goal-tracks");
+    const allMissions = Object.values(GOAL_TRACKS).flatMap((t) => t.missions);
+    const mission = allMissions.find((m) => m.slug === data.slug);
+    if (!mission) throw new Error("Unknown goal mission");
+
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const todayIso = new Date().toISOString().slice(0, 10);
+
+    const { error: insErr } = await supabaseAdmin
+      .from("goal_mission_completions")
+      .insert({ user_id: userId, mission_slug: mission.slug, completed_on: todayIso, xp_awarded: mission.xp });
+    if (insErr) {
+      // duplicate -> already done today
+      if ((insErr as any).code === "23505") return { alreadyDone: true };
+      throw new Error(insErr.message);
+    }
+
+    const { error: rpcErr } = await supabaseAdmin.rpc("award_xp", {
+      _user_id: userId,
+      _amount: mission.xp,
+      _source: `goal_mission:${mission.slug}`,
+      _coins: mission.coins,
+    });
+    if (rpcErr) throw new Error(rpcErr.message);
+
+    return { alreadyDone: false, xp: mission.xp, coins: mission.coins };
+  });
+
+
 
