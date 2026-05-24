@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { CheckCircle2, Circle, Flame } from "lucide-react";
 import { PageHeader } from "./tools/index";
 
-export const Route = createFileRoute("/missions")({
+export const Route = createFileRoute("/_authenticated/missions")({
   head: () => ({ meta: [{ title: "Missions — Bluechip CareerOS™" }] }),
   component: Missions,
 });

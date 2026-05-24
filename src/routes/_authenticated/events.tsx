@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { Calendar, Clock, Users } from "lucide-react";
 import { PageHeader } from "./tools/index";
 
-export const Route = createFileRoute("/events")({
+export const Route = createFileRoute("/_authenticated/events")({
   head: () => ({ meta: [{ title: "Live Events — Bluechip CareerOS™" }] }),
   component: Events,
 });

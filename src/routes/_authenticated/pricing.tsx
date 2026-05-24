@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { Check } from "lucide-react";
 import { PageHeader } from "./tools/index";
 
-export const Route = createFileRoute("/pricing")({
+export const Route = createFileRoute("/_authenticated/pricing")({
   head: () => ({ meta: [{ title: "Membership Tiers — Bluechip CareerOS™" }] }),
   component: Pricing,
 });

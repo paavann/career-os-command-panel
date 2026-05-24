@@ -2,7 +2,7 @@ import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { ArrowLeft, CheckCircle2, Sparkles } from "lucide-react";
 import { TOOLS } from "./index";
 
-export const Route = createFileRoute("/tools/$slug")({
+export const Route = createFileRoute("/_authenticated/tools/$slug")({
   loader: ({ params }) => {
     const tool = TOOLS.find((t) => t.slug === params.slug);
     if (!tool) throw notFound();

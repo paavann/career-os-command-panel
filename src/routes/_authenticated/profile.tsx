@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { Award, Star } from "lucide-react";
 import { PageHeader } from "./tools/index";
 
-export const Route = createFileRoute("/profile")({
+export const Route = createFileRoute("/_authenticated/profile")({
   head: () => ({ meta: [{ title: "Profile — Bluechip CareerOS™" }] }),
   component: Profile,
 });

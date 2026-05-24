@@ -17,8 +17,8 @@ import { Route as EventsRouteImport } from './routes/events'
 import { Route as CoursesRouteImport } from './routes/courses'
 import { Route as CommunityRouteImport } from './routes/community'
 import { Route as AiRouteImport } from './routes/ai'
-import { Route as IndexRouteImport } from './routes/index'
 import { Route as ToolsIndexRouteImport } from './routes/tools/index'
+import { Route as AuthenticatedIndexRouteImport } from './routes/_authenticated/index'
 import { Route as ToolsSlugRouteImport } from './routes/tools/$slug'
 
 const ProfileRoute = ProfileRouteImport.update({
@@ -61,14 +61,14 @@ const AiRoute = AiRouteImport.update({
   path: '/ai',
   getParentRoute: () => rootRouteImport,
 } as any)
-const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const ToolsIndexRoute = ToolsIndexRouteImport.update({
   id: '/tools/',
   path: '/tools/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedIndexRoute = AuthenticatedIndexRouteImport.update({
+  id: '/_authenticated/',
+  path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ToolsSlugRoute = ToolsSlugRouteImport.update({
@@ -78,7 +78,6 @@ const ToolsSlugRoute = ToolsSlugRouteImport.update({
 } as any)
 
 export interface FileRoutesByFullPath {
-  '/': typeof IndexRoute
   '/ai': typeof AiRoute
   '/community': typeof CommunityRoute
   '/courses': typeof CoursesRoute
@@ -88,10 +87,10 @@ export interface FileRoutesByFullPath {
   '/pricing': typeof PricingRoute
   '/profile': typeof ProfileRoute
   '/tools/$slug': typeof ToolsSlugRoute
+  '/': typeof AuthenticatedIndexRoute
   '/tools/': typeof ToolsIndexRoute
 }
 export interface FileRoutesByTo {
-  '/': typeof IndexRoute
   '/ai': typeof AiRoute
   '/community': typeof CommunityRoute
   '/courses': typeof CoursesRoute
@@ -101,11 +100,11 @@ export interface FileRoutesByTo {
   '/pricing': typeof PricingRoute
   '/profile': typeof ProfileRoute
   '/tools/$slug': typeof ToolsSlugRoute
+  '/': typeof AuthenticatedIndexRoute
   '/tools': typeof ToolsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
-  '/': typeof IndexRoute
   '/ai': typeof AiRoute
   '/community': typeof CommunityRoute
   '/courses': typeof CoursesRoute
@@ -115,12 +114,12 @@ export interface FileRoutesById {
   '/pricing': typeof PricingRoute
   '/profile': typeof ProfileRoute
   '/tools/$slug': typeof ToolsSlugRoute
+  '/_authenticated/': typeof AuthenticatedIndexRoute
   '/tools/': typeof ToolsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
-    | '/'
     | '/ai'
     | '/community'
     | '/courses'
@@ -130,10 +129,10 @@ export interface FileRouteTypes {
     | '/pricing'
     | '/profile'
     | '/tools/$slug'
+    | '/'
     | '/tools/'
   fileRoutesByTo: FileRoutesByTo
   to:
-    | '/'
     | '/ai'
     | '/community'
     | '/courses'
@@ -143,10 +142,10 @@ export interface FileRouteTypes {
     | '/pricing'
     | '/profile'
     | '/tools/$slug'
+    | '/'
     | '/tools'
   id:
     | '__root__'
-    | '/'
     | '/ai'
     | '/community'
     | '/courses'
@@ -156,11 +155,11 @@ export interface FileRouteTypes {
     | '/pricing'
     | '/profile'
     | '/tools/$slug'
+    | '/_authenticated/'
     | '/tools/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute
   AiRoute: typeof AiRoute
   CommunityRoute: typeof CommunityRoute
   CoursesRoute: typeof CoursesRoute
@@ -170,6 +169,7 @@ export interface RootRouteChildren {
   PricingRoute: typeof PricingRoute
   ProfileRoute: typeof ProfileRoute
   ToolsSlugRoute: typeof ToolsSlugRoute
+  AuthenticatedIndexRoute: typeof AuthenticatedIndexRoute
   ToolsIndexRoute: typeof ToolsIndexRoute
 }
 
@@ -231,18 +231,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AiRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/tools/': {
       id: '/tools/'
       path: '/tools'
       fullPath: '/tools/'
       preLoaderRoute: typeof ToolsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/': {
+      id: '/_authenticated/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof AuthenticatedIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/tools/$slug': {
@@ -256,7 +256,6 @@ declare module '@tanstack/react-router' {
 }
 
 const rootRouteChildren: RootRouteChildren = {
-  IndexRoute: IndexRoute,
   AiRoute: AiRoute,
   CommunityRoute: CommunityRoute,
   CoursesRoute: CoursesRoute,
@@ -266,6 +265,7 @@ const rootRouteChildren: RootRouteChildren = {
   PricingRoute: PricingRoute,
   ProfileRoute: ProfileRoute,
   ToolsSlugRoute: ToolsSlugRoute,
+  AuthenticatedIndexRoute: AuthenticatedIndexRoute,
   ToolsIndexRoute: ToolsIndexRoute,
 }
 export const routeTree = rootRouteImport
