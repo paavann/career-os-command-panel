@@ -11,6 +11,12 @@ export type MeData = {
     avatar_url: string | null;
     headline: string | null;
     onboarding_completed: boolean;
+    primary_goal: string | null;
+    biggest_challenge: string | null;
+    target_timeline: string | null;
+    linkedin_status: string | null;
+    last_promotion: string | null;
+    created_at: string | null;
     level: number;
     xp: number;
     coins: number;
@@ -97,6 +103,12 @@ export const getMe = createServerFn({ method: "GET" })
         avatar_url: profile.avatar_url,
         headline: profile.headline,
         onboarding_completed: profile.onboarding_completed ?? false,
+        primary_goal: profile.primary_goal ?? null,
+        biggest_challenge: profile.biggest_challenge ?? null,
+        target_timeline: profile.target_timeline ?? null,
+        linkedin_status: profile.linkedin_status ?? null,
+        last_promotion: profile.last_promotion ?? null,
+        created_at: profile.created_at ?? null,
         level: profile.level,
         xp: profile.xp,
         coins: profile.coins,
