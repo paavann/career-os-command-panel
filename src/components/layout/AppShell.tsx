@@ -9,7 +9,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { getMe } from "@/lib/me.functions";
 import { toast } from "sonner";
 
-const baseNav = [
+type NavItem = { to: string; label: string; icon: typeof LayoutDashboard; exact?: boolean };
+const baseNav: NavItem[] = [
   { to: "/", label: "Command", icon: LayoutDashboard, exact: true },
   { to: "/journey", label: "Journey", icon: Compass },
   { to: "/tools", label: "C.A.R.E.E.R.", icon: Sparkles },
@@ -20,7 +21,7 @@ const baseNav = [
   { to: "/missions", label: "Missions", icon: Trophy },
   { to: "/profile", label: "Profile", icon: User },
   { to: "/pricing", label: "Tiers", icon: Crown },
-] as const;
+];
 
 export function useMe() {
   const fetchMe = useServerFn(getMe);
