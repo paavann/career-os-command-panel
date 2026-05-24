@@ -43,6 +43,7 @@ export type MeData = {
     user_mission_id: string;
     completed_at: string | null;
   }>;
+  goalCompletionsToday: string[];
   isAdmin: boolean;
 };
 
