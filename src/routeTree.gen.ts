@@ -26,6 +26,7 @@ import { Route as AuthenticatedAiIndexRouteImport } from './routes/_authenticate
 import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin/index'
 import { Route as ApiAiChatRouteImport } from './routes/api/ai/chat'
 import { Route as AuthenticatedToolsSlugRouteImport } from './routes/_authenticated/tools/$slug'
+import { Route as AuthenticatedCoursesSlugRouteImport } from './routes/_authenticated/courses.$slug'
 import { Route as AuthenticatedAiSlugRouteImport } from './routes/_authenticated/ai/$slug'
 import { Route as AuthenticatedAdminUsersRouteImport } from './routes/_authenticated/admin/users'
 import { Route as AuthenticatedAdminMissionsRouteImport } from './routes/_authenticated/admin/missions'
@@ -115,6 +116,12 @@ const AuthenticatedToolsSlugRoute = AuthenticatedToolsSlugRouteImport.update({
   path: '/tools/$slug',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
+const AuthenticatedCoursesSlugRoute =
+  AuthenticatedCoursesSlugRouteImport.update({
+    id: '/$slug',
+    path: '/$slug',
+    getParentRoute: () => AuthenticatedCoursesRoute,
+  } as any)
 const AuthenticatedAiSlugRoute = AuthenticatedAiSlugRouteImport.update({
   id: '/ai/$slug',
   path: '/ai/$slug',
@@ -144,7 +151,7 @@ export interface FileRoutesByFullPath {
   '/signup': typeof SignupRoute
   '/admin': typeof AuthenticatedAdminRouteWithChildren
   '/community': typeof AuthenticatedCommunityRoute
-  '/courses': typeof AuthenticatedCoursesRoute
+  '/courses': typeof AuthenticatedCoursesRouteWithChildren
   '/events': typeof AuthenticatedEventsRoute
   '/journey': typeof AuthenticatedJourneyRoute
   '/missions': typeof AuthenticatedMissionsRoute
@@ -154,6 +161,7 @@ export interface FileRoutesByFullPath {
   '/admin/missions': typeof AuthenticatedAdminMissionsRoute
   '/admin/users': typeof AuthenticatedAdminUsersRoute
   '/ai/$slug': typeof AuthenticatedAiSlugRoute
+  '/courses/$slug': typeof AuthenticatedCoursesSlugRoute
   '/tools/$slug': typeof AuthenticatedToolsSlugRoute
   '/api/ai/chat': typeof ApiAiChatRoute
   '/admin/': typeof AuthenticatedAdminIndexRoute
@@ -164,7 +172,7 @@ export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/signup': typeof SignupRoute
   '/community': typeof AuthenticatedCommunityRoute
-  '/courses': typeof AuthenticatedCoursesRoute
+  '/courses': typeof AuthenticatedCoursesRouteWithChildren
   '/events': typeof AuthenticatedEventsRoute
   '/journey': typeof AuthenticatedJourneyRoute
   '/missions': typeof AuthenticatedMissionsRoute
@@ -175,6 +183,7 @@ export interface FileRoutesByTo {
   '/admin/missions': typeof AuthenticatedAdminMissionsRoute
   '/admin/users': typeof AuthenticatedAdminUsersRoute
   '/ai/$slug': typeof AuthenticatedAiSlugRoute
+  '/courses/$slug': typeof AuthenticatedCoursesSlugRoute
   '/tools/$slug': typeof AuthenticatedToolsSlugRoute
   '/api/ai/chat': typeof ApiAiChatRoute
   '/admin': typeof AuthenticatedAdminIndexRoute
@@ -188,7 +197,7 @@ export interface FileRoutesById {
   '/signup': typeof SignupRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRouteWithChildren
   '/_authenticated/community': typeof AuthenticatedCommunityRoute
-  '/_authenticated/courses': typeof AuthenticatedCoursesRoute
+  '/_authenticated/courses': typeof AuthenticatedCoursesRouteWithChildren
   '/_authenticated/events': typeof AuthenticatedEventsRoute
   '/_authenticated/journey': typeof AuthenticatedJourneyRoute
   '/_authenticated/missions': typeof AuthenticatedMissionsRoute
@@ -199,6 +208,7 @@ export interface FileRoutesById {
   '/_authenticated/admin/missions': typeof AuthenticatedAdminMissionsRoute
   '/_authenticated/admin/users': typeof AuthenticatedAdminUsersRoute
   '/_authenticated/ai/$slug': typeof AuthenticatedAiSlugRoute
+  '/_authenticated/courses/$slug': typeof AuthenticatedCoursesSlugRoute
   '/_authenticated/tools/$slug': typeof AuthenticatedToolsSlugRoute
   '/api/ai/chat': typeof ApiAiChatRoute
   '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
@@ -223,6 +233,7 @@ export interface FileRouteTypes {
     | '/admin/missions'
     | '/admin/users'
     | '/ai/$slug'
+    | '/courses/$slug'
     | '/tools/$slug'
     | '/api/ai/chat'
     | '/admin/'
@@ -244,6 +255,7 @@ export interface FileRouteTypes {
     | '/admin/missions'
     | '/admin/users'
     | '/ai/$slug'
+    | '/courses/$slug'
     | '/tools/$slug'
     | '/api/ai/chat'
     | '/admin'
@@ -267,6 +279,7 @@ export interface FileRouteTypes {
     | '/_authenticated/admin/missions'
     | '/_authenticated/admin/users'
     | '/_authenticated/ai/$slug'
+    | '/_authenticated/courses/$slug'
     | '/_authenticated/tools/$slug'
     | '/api/ai/chat'
     | '/_authenticated/admin/'
@@ -402,6 +415,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedToolsSlugRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/courses/$slug': {
+      id: '/_authenticated/courses/$slug'
+      path: '/$slug'
+      fullPath: '/courses/$slug'
+      preLoaderRoute: typeof AuthenticatedCoursesSlugRouteImport
+      parentRoute: typeof AuthenticatedCoursesRoute
+    }
     '/_authenticated/ai/$slug': {
       id: '/_authenticated/ai/$slug'
       path: '/ai/$slug'
@@ -450,10 +470,21 @@ const AuthenticatedAdminRouteChildren: AuthenticatedAdminRouteChildren = {
 const AuthenticatedAdminRouteWithChildren =
   AuthenticatedAdminRoute._addFileChildren(AuthenticatedAdminRouteChildren)
 
+interface AuthenticatedCoursesRouteChildren {
+  AuthenticatedCoursesSlugRoute: typeof AuthenticatedCoursesSlugRoute
+}
+
+const AuthenticatedCoursesRouteChildren: AuthenticatedCoursesRouteChildren = {
+  AuthenticatedCoursesSlugRoute: AuthenticatedCoursesSlugRoute,
+}
+
+const AuthenticatedCoursesRouteWithChildren =
+  AuthenticatedCoursesRoute._addFileChildren(AuthenticatedCoursesRouteChildren)
+
 interface AuthenticatedRouteChildren {
   AuthenticatedAdminRoute: typeof AuthenticatedAdminRouteWithChildren
   AuthenticatedCommunityRoute: typeof AuthenticatedCommunityRoute
-  AuthenticatedCoursesRoute: typeof AuthenticatedCoursesRoute
+  AuthenticatedCoursesRoute: typeof AuthenticatedCoursesRouteWithChildren
   AuthenticatedEventsRoute: typeof AuthenticatedEventsRoute
   AuthenticatedJourneyRoute: typeof AuthenticatedJourneyRoute
   AuthenticatedMissionsRoute: typeof AuthenticatedMissionsRoute
@@ -469,7 +500,7 @@ interface AuthenticatedRouteChildren {
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedAdminRoute: AuthenticatedAdminRouteWithChildren,
   AuthenticatedCommunityRoute: AuthenticatedCommunityRoute,
-  AuthenticatedCoursesRoute: AuthenticatedCoursesRoute,
+  AuthenticatedCoursesRoute: AuthenticatedCoursesRouteWithChildren,
   AuthenticatedEventsRoute: AuthenticatedEventsRoute,
   AuthenticatedJourneyRoute: AuthenticatedJourneyRoute,
   AuthenticatedMissionsRoute: AuthenticatedMissionsRoute,
