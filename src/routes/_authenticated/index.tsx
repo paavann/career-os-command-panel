@@ -7,8 +7,9 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import { useMe } from "@/components/layout/AppShell";
-import { completeMission, getLeaderboard } from "@/lib/me.functions";
+import { completeMission, completeGoalMission, getLeaderboard } from "@/lib/me.functions";
 import { TodaysBrief } from "@/components/dashboard/TodaysBrief";
+import { trackForGoal } from "@/lib/goal-tracks";
 
 export const Route = createFileRoute("/_authenticated/")({
   head: () => ({
