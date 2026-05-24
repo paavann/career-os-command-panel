@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { Target, Sparkles, Radio, Award, Activity, Banknote, ArrowUpRight } from "lucide-react";
 
 export const Route = createFileRoute("/tools/")({
-  head: () => ({ meta: [{ title: "C.A.R.E.E.R.™ Ecosystem — CareerOS™" }] }),
+  head: () => ({ meta: [{ title: "C.A.R.E.E.R.™ Ecosystem — Bluechip CareerOS™" }] }),
   component: ToolsIndex,
 });
 

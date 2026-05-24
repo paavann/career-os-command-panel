@@ -3,7 +3,7 @@ import { Trophy, Flame, MessageCircle, TrendingUp } from "lucide-react";
 import { PageHeader } from "./tools/index";
 
 export const Route = createFileRoute("/community")({
-  head: () => ({ meta: [{ title: "Community — CareerOS™" }] }),
+  head: () => ({ meta: [{ title: "Community — Bluechip CareerOS™" }] }),
   component: Community,
 });
 
