@@ -50,18 +50,25 @@ function Dashboard() {
   const { data, isLoading } = useMe();
   const qc = useQueryClient();
   const complete = useServerFn(completeMission);
+  const completeGoal = useServerFn(completeGoalMission);
   const fetchLb = useServerFn(getLeaderboard);
   const { data: lb } = useQuery({ queryKey: ["leaderboard"], queryFn: () => fetchLb(), staleTime: 30_000 });
 
+  const onSuccess = (res: any) => {
+    if (res.alreadyDone) toast.info("Already done today");
+    else toast.success(`+${res.xp} XP · +${res.coins} coins`);
+    qc.invalidateQueries({ queryKey: ["me"] });
+    qc.invalidateQueries({ queryKey: ["leaderboard"] });
+  };
+  const onError = (e: any) => toast.error(e?.message ?? "Failed");
+
   const mut = useMutation({
     mutationFn: (id: string) => complete({ data: { userMissionId: id } }),
-    onSuccess: (res) => {
-      if (res.alreadyDone) toast.info("Already done");
-      else toast.success(`+${res.xp} XP · +${res.coins} coins`);
-      qc.invalidateQueries({ queryKey: ["me"] });
-      qc.invalidateQueries({ queryKey: ["leaderboard"] });
-    },
-    onError: (e: any) => toast.error(e?.message ?? "Failed"),
+    onSuccess, onError,
+  });
+  const goalMut = useMutation({
+    mutationFn: (slug: string) => completeGoal({ data: { slug } }),
+    onSuccess, onError,
   });
 
   if (isLoading || !data) {
