@@ -183,11 +183,14 @@ function Dashboard() {
           <div className="rounded-3xl p-6 bg-gradient-brand relative overflow-hidden">
             <div className="absolute -top-10 -right-10 size-40 rounded-full bg-white/20 blur-2xl" />
             <div className="relative">
-              <div className="text-[10px] font-mono uppercase tracking-[0.25em] text-white/80 font-bold">AI Strategist</div>
-              <p className="text-lg font-display font-semibold leading-snug mt-3 text-white">
-                "{p.streak_days >= 3
-                  ? `Streak locked at ${p.streak_days} days — momentum is your moat. Run a Reach sprint today.`
-                  : "Hit your daily missions to lock in a streak and compound CPI."}"
+              <div className="text-[10px] font-mono uppercase tracking-[0.25em] text-white/80 font-bold flex items-center gap-2">
+                <Sparkles className="size-3" /> AI Strategist
+              </div>
+              <p className="text-base font-display font-semibold leading-snug mt-3 text-white">
+                {line1}
+              </p>
+              <p className="text-sm leading-snug mt-2 text-white/90">
+                {line2}
               </p>
               <Link to="/ai" className="mt-6 block w-full py-2.5 rounded-xl bg-white text-navy font-bold text-sm text-center hover:scale-[1.02] transition-transform">
                 Open AI Hub →
@@ -196,28 +199,31 @@ function Dashboard() {
           </div>
 
           <div className="glass rounded-3xl p-6">
-            <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center justify-between mb-1">
               <h3 className="text-sm font-semibold">Daily Missions</h3>
-              <span className="text-[10px] font-mono text-muted-foreground">{doneCount} / {dailyMissions.length}</span>
+              <span className="text-[10px] font-mono text-muted-foreground">{trackDoneCount} / {track.missions.length}</span>
             </div>
+            <p className="text-[10px] font-mono uppercase tracking-widest text-electric mb-4">
+              {track.goal} track
+            </p>
             <div className="space-y-2">
-              {dailyMissions.length === 0 && (
-                <div className="text-xs text-muted-foreground py-2">No daily missions today.</div>
-              )}
-              {dailyMissions.slice(0, 4).map((m) => {
-                const done = m.status === "completed";
+              {track.missions.map((m) => {
+                const done = doneSet.has(m.slug);
                 return (
                   <button
-                    key={m.user_mission_id}
-                    disabled={done || mut.isPending}
-                    onClick={() => mut.mutate(m.user_mission_id)}
+                    key={m.slug}
+                    disabled={done || goalMut.isPending}
+                    onClick={() => goalMut.mutate(m.slug)}
                     className={`w-full text-left flex items-center gap-3 p-2.5 rounded-lg transition-colors ${
                       done ? "opacity-60" : "hover:bg-accent/40 cursor-pointer"
                     }`}
                   >
                     {done ? <CheckCircle2 className="size-5 text-electric shrink-0" /> : <Circle className="size-5 text-muted-foreground shrink-0" />}
-                    <span className={`text-sm flex-1 truncate ${done ? "line-through text-muted-foreground" : ""}`}>{m.title}</span>
-                    <span className="text-[10px] font-mono font-bold text-gold bg-gold/10 px-2 py-0.5 rounded">+{m.xp_reward}</span>
+                    <div className="flex-1 min-w-0">
+                      <div className={`text-sm truncate ${done ? "line-through text-muted-foreground" : ""}`}>{m.title}</div>
+                      <div className="text-[9px] font-mono uppercase tracking-widest text-muted-foreground/70">{m.pillar}</div>
+                    </div>
+                    <span className="text-[10px] font-mono font-bold text-gold bg-gold/10 px-2 py-0.5 rounded shrink-0">+{m.xp}</span>
                   </button>
                 );
               })}
