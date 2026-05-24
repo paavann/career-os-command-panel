@@ -6,8 +6,11 @@ export type MeData = {
   profile: {
     id: string;
     display_name: string;
+    first_name: string | null;
+    last_name: string | null;
     avatar_url: string | null;
     headline: string | null;
+    onboarding_completed: boolean;
     level: number;
     xp: number;
     coins: number;
