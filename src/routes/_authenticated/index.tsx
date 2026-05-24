@@ -28,14 +28,16 @@ const SCORE_KEYS = [
   { letter: "R", name: "Revenue",   key: "revenue",   tone: "purple"   },
 ] as const;
 
-const tools = [
+const tools: Array<{ slug: string; letter: string; domain: string; name: string; icon: any; key: keyof typeof SCORE_FALLBACK; desc: string; featured?: boolean }> = [
   { slug: "clarity",   letter: "C", domain: "Clarity",   name: "Career Identity Scanner™",     icon: Target,   key: "clarity",   desc: "Map your career DNA and surface your highest-value roles." },
   { slug: "authority", letter: "A", domain: "Authority", name: "Authority Builder Engine™",    icon: Sparkles, key: "authority", desc: "Position yourself as a pre-eminent expert in your field." },
   { slug: "reach",     letter: "R", domain: "Reach",     name: "Visibility Amplifier™",        icon: Radio,    key: "reach",     desc: "Become magnetically discoverable to elite recruiters.", featured: true },
   { slug: "evidence",  letter: "E", domain: "Evidence",  name: "Proof-of-Impact Builder™",     icon: Award,    key: "evidence",  desc: "Quantify business impact for senior roles." },
   { slug: "energy",    letter: "E", domain: "Energy",    name: "Executive Presence Analyzer™", icon: Activity, key: "energy",    desc: "Refine your executive aura and leadership communication." },
   { slug: "revenue",   letter: "R", domain: "Revenue",   name: "Salary Intelligence Engine™",  icon: Banknote, key: "revenue",   desc: "Benchmark comp and master high-stakes negotiation." },
-] as const;
+];
+const SCORE_FALLBACK = { clarity: 0, authority: 0, reach: 0, evidence: 0, energy: 0, revenue: 0 };
+
 
 const journey = [
   { name: "Challenger" }, { name: "Brand Architect" }, { name: "Opportunity Magnet" },
