@@ -14,7 +14,7 @@ import { COURSES } from "@/lib/courses";
 
 export const Route = createFileRoute("/_authenticated/profile")({
   head: () => ({ meta: [{ title: "Profile — Bluechip CareerOS™" }] }),
-  component: Profile;
+  component: Profile,
 });
 
 const SCORE_KEYS = [
