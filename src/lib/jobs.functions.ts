@@ -80,7 +80,7 @@ export const listJobs = createServerFn({ method: "GET" })
       .eq("user_id", userId)
       .order("updated_at", { ascending: false });
     if (error) throw new Error(error.message);
-    return (data ?? []) as Job[];
+    return (data ?? []) as unknown as Job[];
   });
 
 export const createJob = createServerFn({ method: "POST" })
@@ -110,7 +110,7 @@ export const createJob = createServerFn({ method: "POST" })
         _coins: 0,
       });
     }
-    return row as Job;
+    return row as unknown as Job;
   });
 
 export const updateJob = createServerFn({ method: "POST" })
@@ -129,7 +129,7 @@ export const updateJob = createServerFn({ method: "POST" })
       .select("*")
       .single();
     if (error) throw new Error(error.message);
-    return row as Job;
+    return row as unknown as Job;
   });
 
 export const moveJobStage = createServerFn({ method: "POST" })
