@@ -16,6 +16,13 @@ export type MeData = {
     target_timeline: string | null;
     linkedin_status: string | null;
     last_promotion: string | null;
+    job_title: string | null;
+    industry: string | null;
+    current_company: string | null;
+    city: string | null;
+    years_experience: number | null;
+    linkedin_url: string | null;
+    target_role: string | null;
     created_at: string | null;
     level: number;
     xp: number;
