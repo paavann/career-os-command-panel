@@ -52,6 +52,12 @@ export function AppShell({ children }: { children: React.ReactNode }) {
               <div className="text-[10px] font-mono uppercase tracking-widest text-muted-foreground">v1.0 · live</div>
             </div>
           </Link>
+          <div className="mt-4">
+            <div className="text-sm font-semibold truncate">{data?.profile.display_name ?? "Operator"}</div>
+            <div className="mt-1.5 inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-gold/15 border border-gold/40 text-[10px] font-mono uppercase tracking-[0.2em] text-gold">
+              <Gem className="size-3" /> Diamond Member
+            </div>
+          </div>
         </div>
         <nav className="flex-1 px-3 space-y-0.5 overflow-y-auto">
           {nav.map((item) => {
