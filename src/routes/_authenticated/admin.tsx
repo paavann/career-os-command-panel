@@ -1,7 +1,7 @@
 import { createFileRoute, Outlet, Link, redirect, useRouterState } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { Shield, BarChart3, Users, Trophy, Brain, ArrowLeft } from "lucide-react";
+import { Shield, BarChart3, Users, Trophy, Brain, ArrowLeft, Gem } from "lucide-react";
 import { getMe } from "@/lib/me.functions";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -16,6 +16,7 @@ export const Route = createFileRoute("/_authenticated/admin")({
 
 const tabs = [
   { to: "/admin", label: "Overview", icon: BarChart3, exact: true },
+  { to: "/admin/clients", label: "Diamond Clients", icon: Gem },
   { to: "/admin/users", label: "Users", icon: Users },
   { to: "/admin/missions", label: "Missions", icon: Trophy },
   { to: "/admin/ai-usage", label: "AI Usage", icon: Brain },
