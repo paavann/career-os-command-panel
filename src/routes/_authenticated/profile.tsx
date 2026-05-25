@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import {
@@ -570,5 +570,3 @@ function SectionHeader({ eyebrow, title }: { eyebrow: string; title: string }) {
     </div>
   );
 }
-
-const _useMemo = useMemo;
