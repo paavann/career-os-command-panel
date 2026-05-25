@@ -85,7 +85,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         <div className="p-4 m-3 rounded-xl border border-border bg-gradient-to-br from-purple/15 to-electric/10">
           <div className="text-[10px] font-mono uppercase tracking-widest text-muted-foreground">Career Power Index</div>
           <div className="font-display font-black text-3xl text-gradient-brand">{data?.profile.cpi_score ?? 0}</div>
-          <div className="text-xs text-muted-foreground mt-1">{data?.profile.tier ?? "L1"} tier</div>
+          <div className="text-xs mt-1 inline-flex items-center gap-1 text-gold font-semibold"><Gem className="size-3" /> Diamond Member</div>
         </div>
         <button
           onClick={async () => {
