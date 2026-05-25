@@ -187,19 +187,19 @@ function CourseDetail() {
   const activeDone = completedSet.has(activeIdx);
 
   return (
-    <div className="max-w-7xl mx-auto px-6 py-10">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-10">
       <button onClick={() => navigate({ to: "/courses" })}
         className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition">
         <ArrowLeft className="size-4" /> Back to Learning Hub
       </button>
 
       {/* Hero banner */}
-      <div className={`mt-6 rounded-2xl overflow-hidden bg-gradient-to-br ${course.color} p-8 relative`}>
+      <div className={`mt-5 sm:mt-6 rounded-2xl overflow-hidden bg-gradient-to-br ${course.color} p-5 sm:p-8 relative`}>
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,white_0,transparent_55%)] opacity-15 pointer-events-none" />
         <div className="relative flex flex-wrap items-start justify-between gap-4">
           <div className="min-w-0">
             <div className="text-[10px] font-mono uppercase tracking-widest text-white/80">{course.cat} · 💎 Diamond</div>
-            <h1 className="font-display font-black text-white text-3xl md:text-4xl mt-2 max-w-2xl leading-tight drop-shadow">{course.title}</h1>
+            <h1 className="font-display font-black text-white text-2xl sm:text-3xl md:text-4xl mt-2 max-w-2xl leading-tight drop-shadow">{course.title}</h1>
             <div className="mt-4 flex flex-wrap gap-6 text-white/90 text-xs font-mono uppercase tracking-widest">
               <span>{course.mins} min total</span>
               <span>{course.modules.length} modules</span>
@@ -226,13 +226,13 @@ function CourseDetail() {
       </div>
 
       {/* Layout: module sidebar + lesson viewer */}
-      <div className="mt-8 grid grid-cols-1 lg:grid-cols-[280px_1fr] gap-6">
-        {/* Module sidebar */}
+      <div className="mt-6 sm:mt-8 grid grid-cols-1 lg:grid-cols-[280px_1fr] gap-4 sm:gap-6">
+        {/* Module sidebar — horizontal scroll on mobile, vertical sticky on desktop */}
         <aside className="glass rounded-2xl border p-3 h-fit lg:sticky lg:top-6">
-          <div className="px-3 py-2 text-[10px] font-mono uppercase tracking-widest text-muted-foreground">
+          <div className="px-1 lg:px-3 py-1 lg:py-2 text-[10px] font-mono uppercase tracking-widest text-muted-foreground">
             Modules
           </div>
-          <div className="space-y-1">
+          <div className="flex lg:block gap-2 lg:gap-0 lg:space-y-1 overflow-x-auto lg:overflow-visible -mx-1 px-1 lg:mx-0 lg:px-0 snap-x snap-mandatory lg:snap-none scrollbar-thin">
             {course.modules.map((m, i) => {
               const done = completedSet.has(i);
               const active = i === activeIdx;
@@ -240,7 +240,7 @@ function CourseDetail() {
                 <button
                   key={i}
                   onClick={() => setActiveIdx(i)}
-                  className={`w-full text-left px-3 py-2.5 rounded-lg transition flex items-start gap-3 ${
+                  className={`shrink-0 lg:w-full w-[78%] sm:w-[60%] snap-start text-left px-3 py-2.5 rounded-lg transition flex items-start gap-3 ${
                     active ? "bg-electric/10 border border-electric/40" : "hover:bg-muted/50 border border-transparent"
                   }`}
                 >
@@ -272,7 +272,7 @@ function CourseDetail() {
         <main className="min-w-0">
           <article
             key={activeIdx}
-            className={`glass rounded-2xl border p-8 transition-all ${
+            className={`glass rounded-2xl border p-5 sm:p-8 transition-all ${
               justCompleted === activeIdx ? "ring-2 ring-emerald-500/60 shadow-[0_0_40px_rgba(16,185,129,0.25)]" : ""
             }`}
           >
@@ -281,7 +281,7 @@ function CourseDetail() {
                 <div className="text-[10px] font-mono uppercase tracking-widest text-muted-foreground">
                   Module {activeIdx + 1} of {course.modules.length} · {activeModule.mins} min
                 </div>
-                <h2 className="font-display font-black text-2xl md:text-3xl mt-1 leading-tight">
+                <h2 className="font-display font-black text-xl sm:text-2xl md:text-3xl mt-1 leading-tight">
                   {activeModule.title}
                 </h2>
               </div>
@@ -336,10 +336,10 @@ function CourseDetail() {
               <div className="text-xs text-muted-foreground">
                 {activeDone ? "You've completed this module." : "Mark this module complete when you're done."}
               </div>
-              <div className="flex gap-2">
+              <div className="flex flex-wrap gap-2 w-full sm:w-auto">
                 {activeIdx > 0 && (
                   <Button variant="outline" size="sm" onClick={() => setActiveIdx(activeIdx - 1)}>
-                    ← Previous
+                    ← Prev
                   </Button>
                 )}
                 <Button
@@ -347,12 +347,12 @@ function CourseDetail() {
                   variant={activeDone ? "outline" : "default"}
                   disabled={toggle.isPending}
                   onClick={() => toggle.mutate(activeIdx)}
-                  className={activeDone ? "" : "bg-electric hover:bg-electric/90 text-white"}
+                  className={`flex-1 sm:flex-none ${activeDone ? "" : "bg-electric hover:bg-electric/90 text-white"}`}
                 >
                   {activeDone ? (
                     <><CheckCircle2 className="size-4 mr-2" /> Completed</>
                   ) : (
-                    <><Sparkles className="size-4 mr-2" /> Mark Complete · Earn {perModuleXp} XP</>
+                    <><Sparkles className="size-4 mr-2" /> <span className="sm:hidden">Complete · +{perModuleXp} XP</span><span className="hidden sm:inline">Mark Complete · Earn {perModuleXp} XP</span></>
                   )}
                 </Button>
                 {activeIdx < course.modules.length - 1 && (
