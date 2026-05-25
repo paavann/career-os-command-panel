@@ -369,7 +369,7 @@ function Dashboard() {
               <Radar className="size-3 animate-pulse" /> Upcoming
             </div>
             <h3 className="font-display font-bold text-2xl mt-3 leading-tight">Executive Presence Boot Camp</h3>
-            <p className="text-sm text-muted-foreground mt-2">with Dr. Aris Thorne · L2+ required · 90 min</p>
+            <p className="text-sm text-muted-foreground mt-2">with Dr. Aris Thorne · Diamond Member · 90 min</p>
             <div className="flex items-center gap-3 mt-6">
               <Link to="/events" className="flex-1 py-3 rounded-xl bg-foreground text-background font-bold text-sm hover:opacity-90 transition-opacity text-center">
                 See all events
