@@ -174,24 +174,7 @@ function CourseDetail() {
     );
   }
 
-  const userRank = tierRank(me?.profile.tier);
-  const locked = userRank < course.tierRequired;
-
-  if (locked) {
-    return (
-      <div className="max-w-3xl mx-auto px-6 py-16 text-center">
-        <Lock className="size-10 text-gold mx-auto" />
-        <h1 className="font-display text-2xl mt-4">{TIER_LABEL[course.tierRequired]} course</h1>
-        <p className="text-muted-foreground mt-2">
-          This course is part of BlueChip {TIER_LABEL[course.tierRequired]}. Upgrade your membership to unlock {course.mins} minutes of executive-grade content.
-        </p>
-        <div className="flex gap-3 justify-center mt-6">
-          <Button onClick={() => navigate({ to: "/pricing" })}>Upgrade membership</Button>
-          <Button variant="outline" onClick={() => navigate({ to: "/courses" })}>Back</Button>
-        </div>
-      </div>
-    );
-  }
+  void tierRank; void TIER_LABEL; void Lock;
 
   const completed = progress?.completed ?? [];
   const completedSet = useMemo(() => new Set(completed), [completed]);
