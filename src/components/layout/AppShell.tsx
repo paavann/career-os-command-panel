@@ -122,6 +122,9 @@ function TopBar({ level, xp, coins, streak, name }: { level: number; xp: number;
           <span className="font-display font-extrabold tracking-tight">Bluechip CareerOS™</span>
         </div>
         <div className="flex items-center gap-2 ml-auto">
+          <div className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-gold/15 border border-gold/40 text-[11px] font-mono font-semibold text-gold">
+            <Gem className="size-3" /> DIAMOND
+          </div>
           <Pill icon={<span className="size-2 rounded-full bg-gold shadow-glow-gold" />} label={`LVL ${level}`} />
           <Pill icon={<Zap className="size-3 text-gold" />} label={`${xp.toLocaleString()} XP`} />
           <Pill icon={<Coins className="size-3 text-electric" />} label={String(coins)} />
