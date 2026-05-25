@@ -353,7 +353,7 @@ function Dashboard() {
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="text-sm font-medium truncate">{u.display_name}{isMe && " (you)"}</div>
-                    <div className="text-[10px] font-mono text-muted-foreground uppercase">{u.tier}</div>
+                    <div className="text-[10px] font-mono text-gold uppercase">💎 Diamond</div>
                   </div>
                   <span className="text-xs font-mono text-gold">{u.xp.toLocaleString()} XP</span>
                 </div>
