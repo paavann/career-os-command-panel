@@ -24,8 +24,8 @@ function Courses() {
   const navigate = useNavigate();
   const fetchMe = useServerFn(getMe);
   const { data: me } = useQuery({ queryKey: ["me"], queryFn: () => fetchMe() });
-  const userRank = tierRank(me?.profile.tier);
-  const [locked, setLocked] = useState<Course | null>(null);
+  const [, setLocked] = useState<Course | null>(null);
+  void TIER_LABEL; void tierRank; void setLocked;
 
   // Per-user progress (client-side query so the grid reflects completion state)
   const { data: progressMap } = useQuery({
@@ -66,12 +66,8 @@ function Courses() {
           const completedCount = prog?.completed.length ?? 0;
           const pct = Math.round((completedCount / c.modules.length) * 100);
           const isCompleted = !!prog?.completedAt;
-          const isLocked = userRank < c.tierRequired;
 
-          const openCourse = () => {
-            if (isLocked) setLocked(c);
-            else navigate({ to: "/courses/$slug", params: { slug: c.slug } });
-          };
+          const openCourse = () => navigate({ to: "/courses/$slug", params: { slug: c.slug } });
 
           return (
             <button
@@ -94,21 +90,10 @@ function Courses() {
                 <h3 className="relative font-display font-black text-white text-2xl leading-tight drop-shadow">
                   {c.title}
                 </h3>
-                {isLocked ? (
-                  <div className="absolute inset-0 grid place-items-center bg-background/60 backdrop-blur-sm">
-                    <div className="flex flex-col items-center gap-2">
-                      <Lock className="size-8 text-gold" />
-                      <span className="text-[10px] font-mono uppercase tracking-widest text-gold">
-                        {TIER_LABEL[c.tierRequired]}
-                      </span>
-                    </div>
-                  </div>
-                ) : (
-                  <div className="absolute right-4 bottom-4 size-12 rounded-full bg-white/90 text-black grid place-items-center opacity-0 group-hover:opacity-100 transition">
-                    <Play className="size-5 ml-0.5" />
-                  </div>
-                )}
-                {pct > 0 && !isLocked && (
+                <div className="absolute right-4 bottom-4 size-12 rounded-full bg-white/90 text-black grid place-items-center opacity-0 group-hover:opacity-100 transition">
+                  <Play className="size-5 ml-0.5" />
+                </div>
+                {pct > 0 && (
                   <div className="absolute bottom-0 left-0 right-0 h-1 bg-black/40">
                     <div className="h-full bg-electric" style={{ width: `${pct}%` }} />
                   </div>
@@ -119,31 +104,14 @@ function Courses() {
                   <span>{c.mins} min · {c.modules.length} modules</span>
                   <span className="text-gold">+{c.xp} XP</span>
                 </div>
-                <div className="mt-2 text-[10px] font-mono uppercase tracking-widest text-muted-foreground">
-                  {TIER_LABEL[c.tierRequired]} · {pct}% complete
+                <div className="mt-2 text-[10px] font-mono uppercase tracking-widest text-gold">
+                  💎 Diamond · {pct}% complete
                 </div>
               </div>
             </button>
           );
         })}
       </div>
-
-      <Dialog open={!!locked} onOpenChange={(o) => !o && setLocked(null)}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle className="font-display">Diamond-only course</DialogTitle>
-            <DialogDescription className="pt-2">
-              This course is part of BlueChip Diamond. Upgrade your membership to unlock {locked?.mins ?? 320} minutes of executive-grade content.
-            </DialogDescription>
-          </DialogHeader>
-          <div className="flex gap-3 pt-2">
-            <Button className="flex-1" onClick={() => { setLocked(null); navigate({ to: "/pricing" }); }}>
-              Upgrade to Diamond
-            </Button>
-            <Button variant="outline" onClick={() => setLocked(null)}>Maybe later</Button>
-          </div>
-        </DialogContent>
-      </Dialog>
     </div>
   );
 }

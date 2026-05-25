@@ -134,8 +134,9 @@ function Dashboard() {
         <p className="text-xs font-mono uppercase tracking-[0.25em] text-electric mb-3">
           Intelligence Briefing · {new Date().toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" })}
         </p>
-        <h1 className="text-4xl md:text-5xl font-display font-extrabold tracking-tight">
-          Welcome back, {p.first_name?.trim() || p.display_name?.split(" ")[0] || "Operator"}.
+        <h1 className="text-4xl md:text-5xl font-display font-extrabold tracking-tight flex flex-wrap items-center gap-3">
+          <span>Welcome back, {p.first_name?.trim() || p.display_name?.split(" ")[0] || "Operator"}.</span>
+          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-gold/15 border border-gold/40 text-[11px] font-mono uppercase tracking-[0.2em] text-gold">💎 Diamond Member</span>
         </h1>
         <TodaysBrief data={data} />
       </section>
@@ -158,8 +159,8 @@ function Dashboard() {
               </div>
             </div>
             <div className="bg-gold/10 border border-gold/30 rounded-xl px-4 py-3">
-              <div className="text-[10px] font-mono uppercase tracking-widest text-gold">Tier</div>
-              <div className="font-display font-bold text-lg">{p.tier}</div>
+              <div className="text-[10px] font-mono uppercase tracking-widest text-gold">Membership</div>
+              <div className="font-display font-bold text-lg">💎 Diamond</div>
             </div>
           </div>
 
@@ -352,7 +353,7 @@ function Dashboard() {
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="text-sm font-medium truncate">{u.display_name}{isMe && " (you)"}</div>
-                    <div className="text-[10px] font-mono text-muted-foreground uppercase">{u.tier}</div>
+                    <div className="text-[10px] font-mono text-gold uppercase">💎 Diamond</div>
                   </div>
                   <span className="text-xs font-mono text-gold">{u.xp.toLocaleString()} XP</span>
                 </div>
@@ -368,7 +369,7 @@ function Dashboard() {
               <Radar className="size-3 animate-pulse" /> Upcoming
             </div>
             <h3 className="font-display font-bold text-2xl mt-3 leading-tight">Executive Presence Boot Camp</h3>
-            <p className="text-sm text-muted-foreground mt-2">with Dr. Aris Thorne · L2+ required · 90 min</p>
+            <p className="text-sm text-muted-foreground mt-2">with Dr. Aris Thorne · Diamond Member · 90 min</p>
             <div className="flex items-center gap-3 mt-6">
               <Link to="/events" className="flex-1 py-3 rounded-xl bg-foreground text-background font-bold text-sm hover:opacity-90 transition-opacity text-center">
                 See all events

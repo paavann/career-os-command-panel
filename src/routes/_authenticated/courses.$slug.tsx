@@ -174,24 +174,7 @@ function CourseDetail() {
     );
   }
 
-  const userRank = tierRank(me?.profile.tier);
-  const locked = userRank < course.tierRequired;
-
-  if (locked) {
-    return (
-      <div className="max-w-3xl mx-auto px-6 py-16 text-center">
-        <Lock className="size-10 text-gold mx-auto" />
-        <h1 className="font-display text-2xl mt-4">{TIER_LABEL[course.tierRequired]} course</h1>
-        <p className="text-muted-foreground mt-2">
-          This course is part of BlueChip {TIER_LABEL[course.tierRequired]}. Upgrade your membership to unlock {course.mins} minutes of executive-grade content.
-        </p>
-        <div className="flex gap-3 justify-center mt-6">
-          <Button onClick={() => navigate({ to: "/pricing" })}>Upgrade membership</Button>
-          <Button variant="outline" onClick={() => navigate({ to: "/courses" })}>Back</Button>
-        </div>
-      </div>
-    );
-  }
+  void tierRank; void TIER_LABEL; void Lock;
 
   const completed = progress?.completed ?? [];
   const completedSet = useMemo(() => new Set(completed), [completed]);
@@ -215,7 +198,7 @@ function CourseDetail() {
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,white_0,transparent_55%)] opacity-15 pointer-events-none" />
         <div className="relative flex flex-wrap items-start justify-between gap-4">
           <div className="min-w-0">
-            <div className="text-[10px] font-mono uppercase tracking-widest text-white/80">{course.cat} · {TIER_LABEL[course.tierRequired]}</div>
+            <div className="text-[10px] font-mono uppercase tracking-widest text-white/80">{course.cat} · 💎 Diamond</div>
             <h1 className="font-display font-black text-white text-3xl md:text-4xl mt-2 max-w-2xl leading-tight drop-shadow">{course.title}</h1>
             <div className="mt-4 flex flex-wrap gap-6 text-white/90 text-xs font-mono uppercase tracking-widest">
               <span>{course.mins} min total</span>

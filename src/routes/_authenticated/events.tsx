@@ -11,7 +11,7 @@ const events = [
   { title: "Executive Presence Boot Camp", host: "Dr. Aris Thorne", when: "Today · 7:30 PM",  countdown: "42m", attending: 1284, featured: true },
   { title: "Salary Negotiation War Room",  host: "Maya Patel",       when: "Wed · 8:00 PM",   countdown: "1d 4h", attending: 612 },
   { title: "LinkedIn Authority Workshop",  host: "Jordan Reyes",     when: "Fri · 6:00 PM",   countdown: "3d 2h", attending: 489 },
-  { title: "Career Bootcamp · L3+",        host: "Sarah Jenkins",    when: "Next Mon · 7:00 PM", countdown: "6d", attending: 920 },
+  { title: "Career Bootcamp · Diamond",    host: "Sarah Jenkins",    when: "Next Mon · 7:00 PM", countdown: "6d", attending: 920 },
 ];
 
 function Events() {

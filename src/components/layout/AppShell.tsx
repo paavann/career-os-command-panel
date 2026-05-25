@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import {
   LayoutDashboard, Compass, Sparkles, GraduationCap, Users, CalendarDays,
-  Trophy, User, Crown, Flame, Coins, Zap, LogOut, Shield, Briefcase,
+  Trophy, User, Flame, Coins, Zap, LogOut, Shield, Briefcase, Gem,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { getMe } from "@/lib/me.functions";
@@ -21,7 +21,6 @@ const baseNav: NavItem[] = [
   { to: "/missions", label: "Missions", icon: Trophy },
   { to: "/jobs", label: "Job Tracker", icon: Briefcase },
   { to: "/profile", label: "Profile", icon: User },
-  { to: "/pricing", label: "Tiers", icon: Crown },
 ];
 
 export function useMe() {
@@ -53,6 +52,12 @@ export function AppShell({ children }: { children: React.ReactNode }) {
               <div className="text-[10px] font-mono uppercase tracking-widest text-muted-foreground">v1.0 · live</div>
             </div>
           </Link>
+          <div className="mt-4">
+            <div className="text-sm font-semibold truncate">{data?.profile.display_name ?? "Operator"}</div>
+            <div className="mt-1.5 inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-gold/15 border border-gold/40 text-[10px] font-mono uppercase tracking-[0.2em] text-gold">
+              <Gem className="size-3" /> Diamond Member
+            </div>
+          </div>
         </div>
         <nav className="flex-1 px-3 space-y-0.5 overflow-y-auto">
           {nav.map((item) => {
@@ -80,7 +85,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         <div className="p-4 m-3 rounded-xl border border-border bg-gradient-to-br from-purple/15 to-electric/10">
           <div className="text-[10px] font-mono uppercase tracking-widest text-muted-foreground">Career Power Index</div>
           <div className="font-display font-black text-3xl text-gradient-brand">{data?.profile.cpi_score ?? 0}</div>
-          <div className="text-xs text-muted-foreground mt-1">{data?.profile.tier ?? "L1"} tier</div>
+          <div className="text-xs mt-1 inline-flex items-center gap-1 text-gold font-semibold"><Gem className="size-3" /> Diamond Member</div>
         </div>
         <button
           onClick={async () => {
@@ -117,6 +122,9 @@ function TopBar({ level, xp, coins, streak, name }: { level: number; xp: number;
           <span className="font-display font-extrabold tracking-tight">Bluechip CareerOS™</span>
         </div>
         <div className="flex items-center gap-2 ml-auto">
+          <div className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-gold/15 border border-gold/40 text-[11px] font-mono font-semibold text-gold">
+            <Gem className="size-3" /> DIAMOND
+          </div>
           <Pill icon={<span className="size-2 rounded-full bg-gold shadow-glow-gold" />} label={`LVL ${level}`} />
           <Pill icon={<Zap className="size-3 text-gold" />} label={`${xp.toLocaleString()} XP`} />
           <Pill icon={<Coins className="size-3 text-electric" />} label={String(coins)} />
