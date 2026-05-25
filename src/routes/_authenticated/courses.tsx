@@ -24,8 +24,8 @@ function Courses() {
   const navigate = useNavigate();
   const fetchMe = useServerFn(getMe);
   const { data: me } = useQuery({ queryKey: ["me"], queryFn: () => fetchMe() });
-  const userRank = tierRank(me?.profile.tier);
-  const [locked, setLocked] = useState<Course | null>(null);
+  const [, setLocked] = useState<Course | null>(null);
+  void TIER_LABEL; void tierRank; void setLocked;
 
   // Per-user progress (client-side query so the grid reflects completion state)
   const { data: progressMap } = useQuery({
