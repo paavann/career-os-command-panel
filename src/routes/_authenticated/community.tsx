@@ -291,7 +291,9 @@ function Community() {
                       {u.display_name}
                       {u.id === meId && <span className="text-electric ml-2 text-[10px] font-mono">YOU</span>}
                     </div>
-                    <div className="text-[10px] font-mono text-muted-foreground">L{u.level} · {u.streak_days}🔥</div>
+                    <div className="text-[10px] font-mono uppercase tracking-widest text-gold/80 flex items-center gap-1.5">
+                      <Gem className="size-2.5" /> Diamond <span className="text-muted-foreground">· {u.streak_days}🔥</span>
+                    </div>
                   </div>
                   <div className="text-[10px] font-mono text-gold">{u.xp.toLocaleString()}</div>
                 </div>
