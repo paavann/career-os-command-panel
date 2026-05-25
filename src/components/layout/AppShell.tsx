@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import {
   LayoutDashboard, Compass, Sparkles, GraduationCap, Users, CalendarDays,
-  Trophy, User, Crown, Flame, Coins, Zap, LogOut, Shield,
+  Trophy, User, Crown, Flame, Coins, Zap, LogOut, Shield, Briefcase,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { getMe } from "@/lib/me.functions";
@@ -19,6 +19,7 @@ const baseNav: NavItem[] = [
   { to: "/community", label: "Community", icon: Users },
   { to: "/events", label: "Live", icon: CalendarDays },
   { to: "/missions", label: "Missions", icon: Trophy },
+  { to: "/jobs", label: "Job Tracker", icon: Briefcase },
   { to: "/profile", label: "Profile", icon: User },
   { to: "/pricing", label: "Tiers", icon: Crown },
 ];

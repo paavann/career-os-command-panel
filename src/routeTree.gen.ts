@@ -17,6 +17,7 @@ import { Route as AuthenticatedProfileRouteImport } from './routes/_authenticate
 import { Route as AuthenticatedPricingRouteImport } from './routes/_authenticated/pricing'
 import { Route as AuthenticatedMissionsRouteImport } from './routes/_authenticated/missions'
 import { Route as AuthenticatedJourneyRouteImport } from './routes/_authenticated/journey'
+import { Route as AuthenticatedJobsRouteImport } from './routes/_authenticated/jobs'
 import { Route as AuthenticatedEventsRouteImport } from './routes/_authenticated/events'
 import { Route as AuthenticatedCoursesRouteImport } from './routes/_authenticated/courses'
 import { Route as AuthenticatedCommunityRouteImport } from './routes/_authenticated/community'
@@ -69,6 +70,11 @@ const AuthenticatedMissionsRoute = AuthenticatedMissionsRouteImport.update({
 const AuthenticatedJourneyRoute = AuthenticatedJourneyRouteImport.update({
   id: '/journey',
   path: '/journey',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+const AuthenticatedJobsRoute = AuthenticatedJobsRouteImport.update({
+  id: '/jobs',
+  path: '/jobs',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
 const AuthenticatedEventsRoute = AuthenticatedEventsRouteImport.update({
@@ -153,6 +159,7 @@ export interface FileRoutesByFullPath {
   '/community': typeof AuthenticatedCommunityRoute
   '/courses': typeof AuthenticatedCoursesRouteWithChildren
   '/events': typeof AuthenticatedEventsRoute
+  '/jobs': typeof AuthenticatedJobsRoute
   '/journey': typeof AuthenticatedJourneyRoute
   '/missions': typeof AuthenticatedMissionsRoute
   '/pricing': typeof AuthenticatedPricingRoute
@@ -174,6 +181,7 @@ export interface FileRoutesByTo {
   '/community': typeof AuthenticatedCommunityRoute
   '/courses': typeof AuthenticatedCoursesRouteWithChildren
   '/events': typeof AuthenticatedEventsRoute
+  '/jobs': typeof AuthenticatedJobsRoute
   '/journey': typeof AuthenticatedJourneyRoute
   '/missions': typeof AuthenticatedMissionsRoute
   '/pricing': typeof AuthenticatedPricingRoute
@@ -199,6 +207,7 @@ export interface FileRoutesById {
   '/_authenticated/community': typeof AuthenticatedCommunityRoute
   '/_authenticated/courses': typeof AuthenticatedCoursesRouteWithChildren
   '/_authenticated/events': typeof AuthenticatedEventsRoute
+  '/_authenticated/jobs': typeof AuthenticatedJobsRoute
   '/_authenticated/journey': typeof AuthenticatedJourneyRoute
   '/_authenticated/missions': typeof AuthenticatedMissionsRoute
   '/_authenticated/pricing': typeof AuthenticatedPricingRoute
@@ -225,6 +234,7 @@ export interface FileRouteTypes {
     | '/community'
     | '/courses'
     | '/events'
+    | '/jobs'
     | '/journey'
     | '/missions'
     | '/pricing'
@@ -246,6 +256,7 @@ export interface FileRouteTypes {
     | '/community'
     | '/courses'
     | '/events'
+    | '/jobs'
     | '/journey'
     | '/missions'
     | '/pricing'
@@ -270,6 +281,7 @@ export interface FileRouteTypes {
     | '/_authenticated/community'
     | '/_authenticated/courses'
     | '/_authenticated/events'
+    | '/_authenticated/jobs'
     | '/_authenticated/journey'
     | '/_authenticated/missions'
     | '/_authenticated/pricing'
@@ -350,6 +362,13 @@ declare module '@tanstack/react-router' {
       path: '/journey'
       fullPath: '/journey'
       preLoaderRoute: typeof AuthenticatedJourneyRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/jobs': {
+      id: '/_authenticated/jobs'
+      path: '/jobs'
+      fullPath: '/jobs'
+      preLoaderRoute: typeof AuthenticatedJobsRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
     '/_authenticated/events': {
@@ -486,6 +505,7 @@ interface AuthenticatedRouteChildren {
   AuthenticatedCommunityRoute: typeof AuthenticatedCommunityRoute
   AuthenticatedCoursesRoute: typeof AuthenticatedCoursesRouteWithChildren
   AuthenticatedEventsRoute: typeof AuthenticatedEventsRoute
+  AuthenticatedJobsRoute: typeof AuthenticatedJobsRoute
   AuthenticatedJourneyRoute: typeof AuthenticatedJourneyRoute
   AuthenticatedMissionsRoute: typeof AuthenticatedMissionsRoute
   AuthenticatedPricingRoute: typeof AuthenticatedPricingRoute
@@ -502,6 +522,7 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedCommunityRoute: AuthenticatedCommunityRoute,
   AuthenticatedCoursesRoute: AuthenticatedCoursesRouteWithChildren,
   AuthenticatedEventsRoute: AuthenticatedEventsRoute,
+  AuthenticatedJobsRoute: AuthenticatedJobsRoute,
   AuthenticatedJourneyRoute: AuthenticatedJourneyRoute,
   AuthenticatedMissionsRoute: AuthenticatedMissionsRoute,
   AuthenticatedPricingRoute: AuthenticatedPricingRoute,
