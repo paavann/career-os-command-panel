@@ -10,17 +10,49 @@ import { getMe } from "@/lib/me.functions";
 import { toast } from "sonner";
 
 type NavItem = { to: string; label: string; icon: typeof LayoutDashboard; exact?: boolean };
-const baseNav: NavItem[] = [
-  { to: "/", label: "Command", icon: LayoutDashboard, exact: true },
-  { to: "/journey", label: "Journey", icon: Compass },
-  { to: "/tools", label: "C.A.R.E.E.R.", icon: Sparkles },
-  { to: "/ai", label: "AI Hub", icon: Zap },
-  { to: "/courses", label: "Learn", icon: GraduationCap },
-  { to: "/community", label: "Community", icon: Users },
-  { to: "/events", label: "Live", icon: CalendarDays },
-  { to: "/missions", label: "Missions", icon: Trophy },
-  { to: "/jobs", label: "Job Tracker", icon: Briefcase },
-  { to: "/profile", label: "Profile", icon: User },
+type NavGroup = { label: string; items: NavItem[] };
+
+const baseGroups: NavGroup[] = [
+  {
+    label: "Daily",
+    items: [
+      { to: "/", label: "Command", icon: LayoutDashboard, exact: true },
+      { to: "/missions", label: "Missions", icon: Trophy },
+    ],
+  },
+  {
+    label: "Strategize",
+    items: [
+      { to: "/journey", label: "Journey", icon: Compass },
+      { to: "/tools", label: "C.A.R.E.E.R.", icon: Sparkles },
+    ],
+  },
+  {
+    label: "Build",
+    items: [
+      { to: "/courses", label: "Learn", icon: GraduationCap },
+      { to: "/ai", label: "AI Hub", icon: Zap },
+    ],
+  },
+  {
+    label: "Convert",
+    items: [
+      { to: "/jobs", label: "Job Tracker", icon: Briefcase },
+    ],
+  },
+  {
+    label: "Compound",
+    items: [
+      { to: "/community", label: "Community", icon: Users },
+      { to: "/events", label: "Live", icon: CalendarDays },
+    ],
+  },
+  {
+    label: "You",
+    items: [
+      { to: "/profile", label: "Profile", icon: User },
+    ],
+  },
 ];
 
 export function useMe() {
