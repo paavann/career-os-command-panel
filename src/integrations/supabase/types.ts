@@ -136,6 +136,81 @@ export type Database = {
         }
         Relationships: []
       }
+      jobs: {
+        Row: {
+          company: string
+          created_at: string
+          ctc_max: number | null
+          ctc_min: number | null
+          follow_up_date: string | null
+          id: string
+          jd_text: string | null
+          job_url: string | null
+          notes: string | null
+          notes_log: Json
+          outcome: string | null
+          priority: Database["public"]["Enums"]["job_priority"]
+          recruiter_contact: string | null
+          recruiter_name: string | null
+          role: string
+          source: string | null
+          stage: Database["public"]["Enums"]["job_stage"]
+          stage_entered_at: string
+          stage_history: Json
+          target_start_date: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          company: string
+          created_at?: string
+          ctc_max?: number | null
+          ctc_min?: number | null
+          follow_up_date?: string | null
+          id?: string
+          jd_text?: string | null
+          job_url?: string | null
+          notes?: string | null
+          notes_log?: Json
+          outcome?: string | null
+          priority?: Database["public"]["Enums"]["job_priority"]
+          recruiter_contact?: string | null
+          recruiter_name?: string | null
+          role: string
+          source?: string | null
+          stage?: Database["public"]["Enums"]["job_stage"]
+          stage_entered_at?: string
+          stage_history?: Json
+          target_start_date?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          company?: string
+          created_at?: string
+          ctc_max?: number | null
+          ctc_min?: number | null
+          follow_up_date?: string | null
+          id?: string
+          jd_text?: string | null
+          job_url?: string | null
+          notes?: string | null
+          notes_log?: Json
+          outcome?: string | null
+          priority?: Database["public"]["Enums"]["job_priority"]
+          recruiter_contact?: string | null
+          recruiter_name?: string | null
+          role?: string
+          source?: string | null
+          stage?: Database["public"]["Enums"]["job_stage"]
+          stage_entered_at?: string
+          stage_history?: Json
+          target_start_date?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       missions: {
         Row: {
           active: boolean
@@ -398,6 +473,15 @@ export type Database = {
     }
     Enums: {
       app_role: "admin" | "member"
+      job_priority: "high" | "medium" | "low"
+      job_stage:
+        | "wishlist"
+        | "applied"
+        | "phone_screen"
+        | "interview"
+        | "final_round"
+        | "offer"
+        | "closed"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -526,6 +610,16 @@ export const Constants = {
   public: {
     Enums: {
       app_role: ["admin", "member"],
+      job_priority: ["high", "medium", "low"],
+      job_stage: [
+        "wishlist",
+        "applied",
+        "phone_screen",
+        "interview",
+        "final_round",
+        "offer",
+        "closed",
+      ],
     },
   },
 } as const
