@@ -16,6 +16,13 @@ export type MeData = {
     target_timeline: string | null;
     linkedin_status: string | null;
     last_promotion: string | null;
+    job_title: string | null;
+    industry: string | null;
+    current_company: string | null;
+    city: string | null;
+    years_experience: number | null;
+    linkedin_url: string | null;
+    target_role: string | null;
     created_at: string | null;
     level: number;
     xp: number;
@@ -115,6 +122,13 @@ export const getMe = createServerFn({ method: "GET" })
         target_timeline: profile.target_timeline ?? null,
         linkedin_status: profile.linkedin_status ?? null,
         last_promotion: profile.last_promotion ?? null,
+        job_title: profile.job_title ?? null,
+        industry: profile.industry ?? null,
+        current_company: profile.current_company ?? null,
+        city: profile.city ?? null,
+        years_experience: profile.years_experience ?? null,
+        linkedin_url: profile.linkedin_url ?? null,
+        target_role: profile.target_role ?? null,
         created_at: profile.created_at ?? null,
         level: profile.level,
         xp: profile.xp,
@@ -178,16 +192,101 @@ export const updateProfile = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d) =>
     z.object({
-      display_name: z.string().min(1).max(80).optional(),
-      headline: z.string().max(160).optional(),
+      display_name: z.string().trim().min(1).max(80).optional(),
+      headline: z.string().trim().max(160).optional(),
       avatar_url: z.string().url().max(500).optional().nullable(),
+      first_name: z.string().trim().max(80).optional(),
+      last_name: z.string().trim().max(80).optional(),
+      job_title: z.string().trim().max(120).optional(),
+      industry: z.string().trim().max(80).optional(),
+      current_company: z.string().trim().max(120).optional(),
+      city: z.string().trim().max(120).optional(),
+      years_experience: z.number().int().min(0).max(80).optional().nullable(),
+      linkedin_url: z.string().trim().url().max(300).optional().or(z.literal("")),
+      target_role: z.string().trim().max(160).optional(),
+      primary_goal: z.string().trim().max(80).optional(),
+      target_timeline: z.string().trim().max(40).optional(),
     }).parse(d),
   )
   .handler(async ({ data, context }) => {
     const { supabase, userId } = context;
-    const { error } = await supabase.from("profiles").update(data).eq("id", userId);
+    const payload: any = { ...data };
+    if (payload.linkedin_url === "") payload.linkedin_url = null;
+    const { error } = await supabase.from("profiles").update(payload).eq("id", userId);
     if (error) throw new Error(error.message);
     return { ok: true };
+  });
+
+export const getProfileStats = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
+    const { supabase, userId } = context;
+    const now = new Date();
+    const monthStart = new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
+    const lastMonthStart = new Date(now.getFullYear(), now.getMonth() - 1, 1).toISOString();
+
+    const [xpRes, missionsRes, coursesRes, aiRes] = await Promise.all([
+      supabase
+        .from("xp_events")
+        .select("amount, source, created_at")
+        .eq("user_id", userId)
+        .gte("created_at", lastMonthStart),
+      supabase
+        .from("user_missions")
+        .select("status, completed_at")
+        .eq("user_id", userId),
+      supabase
+        .from("user_courses")
+        .select("course_slug, completed_modules, course_completed_at"),
+      supabase
+        .from("ai_conversations")
+        .select("copilot_slug")
+        .eq("user_id", userId),
+    ]);
+
+    const xpEvents = xpRes.data ?? [];
+    const xpThisMonth = xpEvents
+      .filter((e: any) => e.created_at >= monthStart)
+      .reduce((s: number, e: any) => s + (e.amount ?? 0), 0);
+    const xpLastMonth = xpEvents
+      .filter((e: any) => e.created_at < monthStart)
+      .reduce((s: number, e: any) => s + (e.amount ?? 0), 0);
+
+    const allMissions = missionsRes.data ?? [];
+    const missionsCompleted = allMissions.filter((m: any) => m.status === "completed").length;
+    const missionsTotal = allMissions.length;
+    const missionsThisMonth = allMissions.filter(
+      (m: any) => m.status === "completed" && m.completed_at && m.completed_at >= monthStart,
+    ).length;
+
+    const courses = coursesRes.data ?? [];
+    const coursesCompleted = courses.filter((c: any) => c.course_completed_at).length;
+    const coursesProgress = courses.map((c: any) => ({
+      slug: c.course_slug,
+      completed: ((c.completed_modules ?? []) as number[]).length,
+      done: !!c.course_completed_at,
+    }));
+
+    const aiTools = new Set<string>((aiRes.data ?? []).map((c: any) => c.copilot_slug));
+    const engineSources = new Set<string>(
+      xpEvents
+        .map((e: any) => e.source as string)
+        .filter((s: string) => s?.startsWith("engine:"))
+        .map((s: string) => s.split(":")[1]),
+    );
+
+    return {
+      xpThisMonth,
+      xpLastMonth,
+      missionsCompleted,
+      missionsTotal,
+      missionsThisMonth,
+      coursesCompleted,
+      coursesProgress,
+      aiToolsUsed: aiTools.size,
+      enginesOpened: engineSources.size,
+      liveSessionsAttended: 0,
+    };
   });
 
 export const getLeaderboard = createServerFn({ method: "GET" })

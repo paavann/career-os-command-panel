@@ -173,9 +173,11 @@ export type Database = {
         Row: {
           avatar_url: string | null
           biggest_challenge: string | null
+          city: string | null
           coins: number
           cpi_score: number
           created_at: string
+          current_company: string | null
           display_name: string
           first_name: string | null
           headline: string | null
@@ -187,20 +189,25 @@ export type Database = {
           last_promotion: string | null
           level: number
           linkedin_status: string | null
+          linkedin_url: string | null
           onboarding_completed: boolean
           primary_goal: string | null
           streak_days: number
+          target_role: string | null
           target_timeline: string | null
           tier: string
           updated_at: string
           xp: number
+          years_experience: number | null
         }
         Insert: {
           avatar_url?: string | null
           biggest_challenge?: string | null
+          city?: string | null
           coins?: number
           cpi_score?: number
           created_at?: string
+          current_company?: string | null
           display_name?: string
           first_name?: string | null
           headline?: string | null
@@ -212,20 +219,25 @@ export type Database = {
           last_promotion?: string | null
           level?: number
           linkedin_status?: string | null
+          linkedin_url?: string | null
           onboarding_completed?: boolean
           primary_goal?: string | null
           streak_days?: number
+          target_role?: string | null
           target_timeline?: string | null
           tier?: string
           updated_at?: string
           xp?: number
+          years_experience?: number | null
         }
         Update: {
           avatar_url?: string | null
           biggest_challenge?: string | null
+          city?: string | null
           coins?: number
           cpi_score?: number
           created_at?: string
+          current_company?: string | null
           display_name?: string
           first_name?: string | null
           headline?: string | null
@@ -237,13 +249,16 @@ export type Database = {
           last_promotion?: string | null
           level?: number
           linkedin_status?: string | null
+          linkedin_url?: string | null
           onboarding_completed?: boolean
           primary_goal?: string | null
           streak_days?: number
+          target_role?: string | null
           target_timeline?: string | null
           tier?: string
           updated_at?: string
           xp?: number
+          years_experience?: number | null
         }
         Relationships: []
       }
