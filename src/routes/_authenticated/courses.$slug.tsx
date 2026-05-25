@@ -199,7 +199,7 @@ function CourseDetail() {
         <div className="relative flex flex-wrap items-start justify-between gap-4">
           <div className="min-w-0">
             <div className="text-[10px] font-mono uppercase tracking-widest text-white/80">{course.cat} · 💎 Diamond</div>
-            <h1 className="font-display font-black text-white text-3xl md:text-4xl mt-2 max-w-2xl leading-tight drop-shadow">{course.title}</h1>
+            <h1 className="font-display font-black text-white text-2xl sm:text-3xl md:text-4xl mt-2 max-w-2xl leading-tight drop-shadow">{course.title}</h1>
             <div className="mt-4 flex flex-wrap gap-6 text-white/90 text-xs font-mono uppercase tracking-widest">
               <span>{course.mins} min total</span>
               <span>{course.modules.length} modules</span>
