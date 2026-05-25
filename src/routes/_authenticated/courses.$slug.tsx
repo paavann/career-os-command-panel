@@ -281,7 +281,7 @@ function CourseDetail() {
                 <div className="text-[10px] font-mono uppercase tracking-widest text-muted-foreground">
                   Module {activeIdx + 1} of {course.modules.length} · {activeModule.mins} min
                 </div>
-                <h2 className="font-display font-black text-2xl md:text-3xl mt-1 leading-tight">
+                <h2 className="font-display font-black text-xl sm:text-2xl md:text-3xl mt-1 leading-tight">
                   {activeModule.title}
                 </h2>
               </div>
