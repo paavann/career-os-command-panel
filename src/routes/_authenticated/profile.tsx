@@ -533,7 +533,7 @@ function QuickLinks({ linkedinUrl }: { linkedinUrl: string | null }) {
           icon={<Briefcase className="size-4" />}
           label="Job Tracker"
           sub="Pipeline & offers"
-          onClick={() => toast.info("Job tracker launching soon")}
+          to="/jobs"
         />
       </div>
     </div>
