@@ -159,8 +159,8 @@ function Dashboard() {
               </div>
             </div>
             <div className="bg-gold/10 border border-gold/30 rounded-xl px-4 py-3">
-              <div className="text-[10px] font-mono uppercase tracking-widest text-gold">Tier</div>
-              <div className="font-display font-bold text-lg">{p.tier}</div>
+              <div className="text-[10px] font-mono uppercase tracking-widest text-gold">Membership</div>
+              <div className="font-display font-bold text-lg">💎 Diamond</div>
             </div>
           </div>
 
