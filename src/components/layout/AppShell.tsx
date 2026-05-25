@@ -10,17 +10,49 @@ import { getMe } from "@/lib/me.functions";
 import { toast } from "sonner";
 
 type NavItem = { to: string; label: string; icon: typeof LayoutDashboard; exact?: boolean };
-const baseNav: NavItem[] = [
-  { to: "/", label: "Command", icon: LayoutDashboard, exact: true },
-  { to: "/journey", label: "Journey", icon: Compass },
-  { to: "/tools", label: "C.A.R.E.E.R.", icon: Sparkles },
-  { to: "/ai", label: "AI Hub", icon: Zap },
-  { to: "/courses", label: "Learn", icon: GraduationCap },
-  { to: "/community", label: "Community", icon: Users },
-  { to: "/events", label: "Live", icon: CalendarDays },
-  { to: "/missions", label: "Missions", icon: Trophy },
-  { to: "/jobs", label: "Job Tracker", icon: Briefcase },
-  { to: "/profile", label: "Profile", icon: User },
+type NavGroup = { label: string; items: NavItem[] };
+
+const baseGroups: NavGroup[] = [
+  {
+    label: "Daily",
+    items: [
+      { to: "/", label: "Command", icon: LayoutDashboard, exact: true },
+      { to: "/missions", label: "Missions", icon: Trophy },
+    ],
+  },
+  {
+    label: "Strategize",
+    items: [
+      { to: "/journey", label: "Journey", icon: Compass },
+      { to: "/tools", label: "C.A.R.E.E.R.", icon: Sparkles },
+    ],
+  },
+  {
+    label: "Build",
+    items: [
+      { to: "/courses", label: "Learn", icon: GraduationCap },
+      { to: "/ai", label: "AI Hub", icon: Zap },
+    ],
+  },
+  {
+    label: "Convert",
+    items: [
+      { to: "/jobs", label: "Job Tracker", icon: Briefcase },
+    ],
+  },
+  {
+    label: "Compound",
+    items: [
+      { to: "/community", label: "Community", icon: Users },
+      { to: "/events", label: "Live", icon: CalendarDays },
+    ],
+  },
+  {
+    label: "You",
+    items: [
+      { to: "/profile", label: "Profile", icon: User },
+    ],
+  },
 ];
 
 export function useMe() {
@@ -37,9 +69,9 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   const { data } = useMe();
   const navigate = useNavigate();
 
-  const nav: NavItem[] = data?.isAdmin
-    ? [...baseNav, { to: "/admin", label: "Admin", icon: Shield }]
-    : baseNav;
+  const groups: NavGroup[] = data?.isAdmin
+    ? [...baseGroups, { label: "Ops", items: [{ to: "/admin", label: "Admin", icon: Shield }] }]
+    : baseGroups;
 
   return (
     <div className="min-h-screen bg-background text-foreground flex">
@@ -59,28 +91,40 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             </div>
           </div>
         </div>
-        <nav className="flex-1 px-3 space-y-0.5 overflow-y-auto">
-          {nav.map((item) => {
-            const Icon = item.icon;
-            const active = item.exact
-              ? location.pathname === item.to
-              : location.pathname.startsWith(item.to);
-            return (
-              <Link
-                key={item.to}
-                to={item.to as any}
-                className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all ${
-                  active
-                    ? "bg-accent text-foreground ring-1 ring-border"
-                    : "text-muted-foreground hover:text-foreground hover:bg-accent/50"
-                }`}
-              >
-                <Icon className="size-4" />
-                {item.label}
-                {active && <span className="ml-auto size-1.5 rounded-full bg-electric shadow-[0_0_8px_var(--electric)]" />}
-              </Link>
-            );
-          })}
+        <nav className="flex-1 px-3 pb-3 overflow-y-auto">
+          {groups.map((group, gi) => (
+            <div key={group.label} className={gi === 0 ? "" : "mt-4"}>
+              <div className="px-3 mb-1.5 flex items-center gap-2">
+                <span className="text-[9px] font-mono uppercase tracking-[0.25em] text-muted-foreground/70">
+                  {String(gi + 1).padStart(2, "0")} · {group.label}
+                </span>
+                <span className="flex-1 h-px bg-border/60" />
+              </div>
+              <div className="space-y-0.5">
+                {group.items.map((item) => {
+                  const Icon = item.icon;
+                  const active = item.exact
+                    ? location.pathname === item.to
+                    : location.pathname.startsWith(item.to);
+                  return (
+                    <Link
+                      key={item.to}
+                      to={item.to as any}
+                      className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-all ${
+                        active
+                          ? "bg-accent text-foreground ring-1 ring-border"
+                          : "text-muted-foreground hover:text-foreground hover:bg-accent/50"
+                      }`}
+                    >
+                      <Icon className="size-4" />
+                      {item.label}
+                      {active && <span className="ml-auto size-1.5 rounded-full bg-electric shadow-[0_0_8px_var(--electric)]" />}
+                    </Link>
+                  );
+                })}
+              </div>
+            </div>
+          ))}
         </nav>
         <div className="p-4 m-3 rounded-xl border border-border bg-gradient-to-br from-purple/15 to-electric/10">
           <div className="text-[10px] font-mono uppercase tracking-widest text-muted-foreground">Career Power Index</div>
