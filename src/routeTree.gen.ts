@@ -31,6 +31,7 @@ import { Route as AuthenticatedCoursesSlugRouteImport } from './routes/_authenti
 import { Route as AuthenticatedAiSlugRouteImport } from './routes/_authenticated/ai/$slug'
 import { Route as AuthenticatedAdminUsersRouteImport } from './routes/_authenticated/admin/users'
 import { Route as AuthenticatedAdminMissionsRouteImport } from './routes/_authenticated/admin/missions'
+import { Route as AuthenticatedAdminClientsRouteImport } from './routes/_authenticated/admin/clients'
 import { Route as AuthenticatedAdminAiUsageRouteImport } from './routes/_authenticated/admin/ai-usage'
 
 const SignupRoute = SignupRouteImport.update({
@@ -144,6 +145,12 @@ const AuthenticatedAdminMissionsRoute =
     path: '/missions',
     getParentRoute: () => AuthenticatedAdminRoute,
   } as any)
+const AuthenticatedAdminClientsRoute =
+  AuthenticatedAdminClientsRouteImport.update({
+    id: '/clients',
+    path: '/clients',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
 const AuthenticatedAdminAiUsageRoute =
   AuthenticatedAdminAiUsageRouteImport.update({
     id: '/ai-usage',
@@ -165,6 +172,7 @@ export interface FileRoutesByFullPath {
   '/pricing': typeof AuthenticatedPricingRoute
   '/profile': typeof AuthenticatedProfileRoute
   '/admin/ai-usage': typeof AuthenticatedAdminAiUsageRoute
+  '/admin/clients': typeof AuthenticatedAdminClientsRoute
   '/admin/missions': typeof AuthenticatedAdminMissionsRoute
   '/admin/users': typeof AuthenticatedAdminUsersRoute
   '/ai/$slug': typeof AuthenticatedAiSlugRoute
@@ -188,6 +196,7 @@ export interface FileRoutesByTo {
   '/profile': typeof AuthenticatedProfileRoute
   '/': typeof AuthenticatedIndexRoute
   '/admin/ai-usage': typeof AuthenticatedAdminAiUsageRoute
+  '/admin/clients': typeof AuthenticatedAdminClientsRoute
   '/admin/missions': typeof AuthenticatedAdminMissionsRoute
   '/admin/users': typeof AuthenticatedAdminUsersRoute
   '/ai/$slug': typeof AuthenticatedAiSlugRoute
@@ -214,6 +223,7 @@ export interface FileRoutesById {
   '/_authenticated/profile': typeof AuthenticatedProfileRoute
   '/_authenticated/': typeof AuthenticatedIndexRoute
   '/_authenticated/admin/ai-usage': typeof AuthenticatedAdminAiUsageRoute
+  '/_authenticated/admin/clients': typeof AuthenticatedAdminClientsRoute
   '/_authenticated/admin/missions': typeof AuthenticatedAdminMissionsRoute
   '/_authenticated/admin/users': typeof AuthenticatedAdminUsersRoute
   '/_authenticated/ai/$slug': typeof AuthenticatedAiSlugRoute
@@ -240,6 +250,7 @@ export interface FileRouteTypes {
     | '/pricing'
     | '/profile'
     | '/admin/ai-usage'
+    | '/admin/clients'
     | '/admin/missions'
     | '/admin/users'
     | '/ai/$slug'
@@ -263,6 +274,7 @@ export interface FileRouteTypes {
     | '/profile'
     | '/'
     | '/admin/ai-usage'
+    | '/admin/clients'
     | '/admin/missions'
     | '/admin/users'
     | '/ai/$slug'
@@ -288,6 +300,7 @@ export interface FileRouteTypes {
     | '/_authenticated/profile'
     | '/_authenticated/'
     | '/_authenticated/admin/ai-usage'
+    | '/_authenticated/admin/clients'
     | '/_authenticated/admin/missions'
     | '/_authenticated/admin/users'
     | '/_authenticated/ai/$slug'
@@ -462,6 +475,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminMissionsRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
     }
+    '/_authenticated/admin/clients': {
+      id: '/_authenticated/admin/clients'
+      path: '/clients'
+      fullPath: '/admin/clients'
+      preLoaderRoute: typeof AuthenticatedAdminClientsRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
     '/_authenticated/admin/ai-usage': {
       id: '/_authenticated/admin/ai-usage'
       path: '/ai-usage'
@@ -474,6 +494,7 @@ declare module '@tanstack/react-router' {
 
 interface AuthenticatedAdminRouteChildren {
   AuthenticatedAdminAiUsageRoute: typeof AuthenticatedAdminAiUsageRoute
+  AuthenticatedAdminClientsRoute: typeof AuthenticatedAdminClientsRoute
   AuthenticatedAdminMissionsRoute: typeof AuthenticatedAdminMissionsRoute
   AuthenticatedAdminUsersRoute: typeof AuthenticatedAdminUsersRoute
   AuthenticatedAdminIndexRoute: typeof AuthenticatedAdminIndexRoute
@@ -481,6 +502,7 @@ interface AuthenticatedAdminRouteChildren {
 
 const AuthenticatedAdminRouteChildren: AuthenticatedAdminRouteChildren = {
   AuthenticatedAdminAiUsageRoute: AuthenticatedAdminAiUsageRoute,
+  AuthenticatedAdminClientsRoute: AuthenticatedAdminClientsRoute,
   AuthenticatedAdminMissionsRoute: AuthenticatedAdminMissionsRoute,
   AuthenticatedAdminUsersRoute: AuthenticatedAdminUsersRoute,
   AuthenticatedAdminIndexRoute: AuthenticatedAdminIndexRoute,
