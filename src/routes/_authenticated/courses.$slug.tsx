@@ -226,13 +226,13 @@ function CourseDetail() {
       </div>
 
       {/* Layout: module sidebar + lesson viewer */}
-      <div className="mt-8 grid grid-cols-1 lg:grid-cols-[280px_1fr] gap-6">
-        {/* Module sidebar */}
+      <div className="mt-6 sm:mt-8 grid grid-cols-1 lg:grid-cols-[280px_1fr] gap-4 sm:gap-6">
+        {/* Module sidebar — horizontal scroll on mobile, vertical sticky on desktop */}
         <aside className="glass rounded-2xl border p-3 h-fit lg:sticky lg:top-6">
-          <div className="px-3 py-2 text-[10px] font-mono uppercase tracking-widest text-muted-foreground">
+          <div className="px-1 lg:px-3 py-1 lg:py-2 text-[10px] font-mono uppercase tracking-widest text-muted-foreground">
             Modules
           </div>
-          <div className="space-y-1">
+          <div className="flex lg:block gap-2 lg:gap-0 lg:space-y-1 overflow-x-auto lg:overflow-visible -mx-1 px-1 lg:mx-0 lg:px-0 snap-x snap-mandatory lg:snap-none scrollbar-thin">
             {course.modules.map((m, i) => {
               const done = completedSet.has(i);
               const active = i === activeIdx;
@@ -240,7 +240,7 @@ function CourseDetail() {
                 <button
                   key={i}
                   onClick={() => setActiveIdx(i)}
-                  className={`w-full text-left px-3 py-2.5 rounded-lg transition flex items-start gap-3 ${
+                  className={`shrink-0 lg:w-full w-[78%] sm:w-[60%] snap-start text-left px-3 py-2.5 rounded-lg transition flex items-start gap-3 ${
                     active ? "bg-electric/10 border border-electric/40" : "hover:bg-muted/50 border border-transparent"
                   }`}
                 >
@@ -272,7 +272,7 @@ function CourseDetail() {
         <main className="min-w-0">
           <article
             key={activeIdx}
-            className={`glass rounded-2xl border p-8 transition-all ${
+            className={`glass rounded-2xl border p-5 sm:p-8 transition-all ${
               justCompleted === activeIdx ? "ring-2 ring-emerald-500/60 shadow-[0_0_40px_rgba(16,185,129,0.25)]" : ""
             }`}
           >
