@@ -210,7 +210,7 @@ export const updateProfile = createServerFn({ method: "POST" })
   )
   .handler(async ({ data, context }) => {
     const { supabase, userId } = context;
-    const payload: Record<string, any> = { ...data };
+    const payload: any = { ...data };
     if (payload.linkedin_url === "") payload.linkedin_url = null;
     const { error } = await supabase.from("profiles").update(payload).eq("id", userId);
     if (error) throw new Error(error.message);
