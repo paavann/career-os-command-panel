@@ -336,10 +336,10 @@ function CourseDetail() {
               <div className="text-xs text-muted-foreground">
                 {activeDone ? "You've completed this module." : "Mark this module complete when you're done."}
               </div>
-              <div className="flex gap-2">
+              <div className="flex flex-wrap gap-2 w-full sm:w-auto">
                 {activeIdx > 0 && (
                   <Button variant="outline" size="sm" onClick={() => setActiveIdx(activeIdx - 1)}>
-                    ← Previous
+                    ← Prev
                   </Button>
                 )}
                 <Button
@@ -347,12 +347,12 @@ function CourseDetail() {
                   variant={activeDone ? "outline" : "default"}
                   disabled={toggle.isPending}
                   onClick={() => toggle.mutate(activeIdx)}
-                  className={activeDone ? "" : "bg-electric hover:bg-electric/90 text-white"}
+                  className={`flex-1 sm:flex-none ${activeDone ? "" : "bg-electric hover:bg-electric/90 text-white"}`}
                 >
                   {activeDone ? (
                     <><CheckCircle2 className="size-4 mr-2" /> Completed</>
                   ) : (
-                    <><Sparkles className="size-4 mr-2" /> Mark Complete · Earn {perModuleXp} XP</>
+                    <><Sparkles className="size-4 mr-2" /> <span className="sm:hidden">Complete · +{perModuleXp} XP</span><span className="hidden sm:inline">Mark Complete · Earn {perModuleXp} XP</span></>
                   )}
                 </Button>
                 {activeIdx < course.modules.length - 1 && (
