@@ -187,14 +187,14 @@ function CourseDetail() {
   const activeDone = completedSet.has(activeIdx);
 
   return (
-    <div className="max-w-7xl mx-auto px-6 py-10">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-10">
       <button onClick={() => navigate({ to: "/courses" })}
         className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition">
         <ArrowLeft className="size-4" /> Back to Learning Hub
       </button>
 
       {/* Hero banner */}
-      <div className={`mt-6 rounded-2xl overflow-hidden bg-gradient-to-br ${course.color} p-8 relative`}>
+      <div className={`mt-5 sm:mt-6 rounded-2xl overflow-hidden bg-gradient-to-br ${course.color} p-5 sm:p-8 relative`}>
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,white_0,transparent_55%)] opacity-15 pointer-events-none" />
         <div className="relative flex flex-wrap items-start justify-between gap-4">
           <div className="min-w-0">
