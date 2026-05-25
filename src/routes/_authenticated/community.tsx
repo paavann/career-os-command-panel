@@ -375,7 +375,9 @@ function Community() {
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="text-sm font-medium truncate">{u.display_name}{isMe && <span className="text-electric ml-2 text-[10px] font-mono">YOU</span>}</div>
-                    <div className="text-[10px] font-mono uppercase text-muted-foreground">L{u.level} · 💎 Diamond</div>
+                    <div className="text-[10px] font-mono uppercase tracking-widest text-gold/80 flex items-center gap-1.5">
+                      <Gem className="size-2.5" /> Diamond Member
+                    </div>
                   </div>
                   <div className="text-xs font-mono text-orange-400 hidden sm:block">{u.streak_days}🔥</div>
                   <div className="text-xs font-mono text-gold w-24 text-right">{u.xp.toLocaleString()} XP</div>
