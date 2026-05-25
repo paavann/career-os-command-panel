@@ -134,8 +134,9 @@ function Dashboard() {
         <p className="text-xs font-mono uppercase tracking-[0.25em] text-electric mb-3">
           Intelligence Briefing · {new Date().toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" })}
         </p>
-        <h1 className="text-4xl md:text-5xl font-display font-extrabold tracking-tight">
-          Welcome back, {p.first_name?.trim() || p.display_name?.split(" ")[0] || "Operator"}.
+        <h1 className="text-4xl md:text-5xl font-display font-extrabold tracking-tight flex flex-wrap items-center gap-3">
+          <span>Welcome back, {p.first_name?.trim() || p.display_name?.split(" ")[0] || "Operator"}.</span>
+          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-gold/15 border border-gold/40 text-[11px] font-mono uppercase tracking-[0.2em] text-gold">💎 Diamond Member</span>
         </h1>
         <TodaysBrief data={data} />
       </section>
