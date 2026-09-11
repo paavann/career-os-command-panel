@@ -110,6 +110,12 @@ export const getCareerWorkspace = createServerFn({ method: "POST" }).inputValida
 
 const analysisInput = tokenInput.extend({ pillar: pillarSchema.exclude(["evidence"]), formData: z.record(z.string(), z.unknown()), followupTranscript: z.array(z.object({ role: z.string(), content: z.string() })).max(4).default([]) });
 
+export const askCareerFollowup = createServerFn({ method: "POST" }).inputValidator((v) => analysisInput.parse(v)).handler(async ({ data }) => {
+  assertMember(data.memberId, data.token);
+  const output = await callAi(`You are a direct, warm BlueChip ${data.pillar} expert. Ask exactly one short question that will materially sharpen this assessment. Do not repeat a form question. This is follow-up ${Math.floor(data.followupTranscript.length / 2) + 1} of 2. Return JSON with one key: question.`, { form_data: data.formData, transcript: data.followupTranscript });
+  return { question: String(output.question ?? "What outcome would make this analysis most valuable right now?") };
+});
+
 export const generateCareerAssessment = createServerFn({ method: "POST" }).inputValidator((v) => analysisInput.parse(v)).handler(async ({ data }) => {
   assertMember(data.memberId, data.token);
   const db = await admin();
