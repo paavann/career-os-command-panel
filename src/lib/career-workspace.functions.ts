@@ -111,7 +111,8 @@ const analysisInput = tokenInput.extend({ pillar: pillarSchema.exclude(["evidenc
 
 export const askCareerFollowup = createServerFn({ method: "POST" }).inputValidator((v) => analysisInput.parse(v)).handler(async ({ data }) => {
   assertMember(data.memberId, data.token);
-  const output = await callAi(`You are a direct, warm BlueChip ${data.pillar} expert. Ask exactly one short question that will materially sharpen this assessment. Do not repeat a form question. This is follow-up ${Math.floor(data.followupTranscript.length / 2) + 1} of 2. Return JSON with one key: question.`, { form_data: data.formData, transcript: data.followupTranscript });
+  const followupContext = JSON.parse(JSON.stringify({ form_data: data.formData, transcript: data.followupTranscript })) as Record<string, JsonValue>;
+  const output = await callAi(`You are a direct, warm BlueChip ${data.pillar} expert. Ask exactly one short question that will materially sharpen this assessment. Do not repeat a form question. This is follow-up ${Math.floor(data.followupTranscript.length / 2) + 1} of 2. Return JSON with one key: question.`, followupContext);
   return { question: String(output.question ?? "What outcome would make this analysis most valuable right now?") };
 });
 
