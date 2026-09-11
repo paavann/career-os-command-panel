@@ -73,12 +73,11 @@ export const touchCareerMember = createServerFn({ method: "POST" }).inputValidat
 });
 
 function assessmentFrom(row: Record<string, JsonValue>, pillar: Pillar): Assessment {
-  const content = row;
   const score = Number(row[`${pillar}_score`] ?? row["total_score"] ?? 0);
   const breakdown = Object.entries(row)
     .filter(([key, value]) => key.endsWith("_score") && key !== `${pillar}_score` && key !== "total_score" && typeof value === "number")
     .map(([key, value]) => ({ label: key.replace(/_score$/, "").replaceAll("_", " "), score: Number(value), reasoning: String(row["score_reasoning"] ?? "") }));
-  return { id: String(row.id), pillar, score, createdAt: String(row.created_at), verdict: String(row["verdict"] ?? row["score_reasoning"] ?? "Your next move is now clear."), reasoning: String(row["score_reasoning"] ?? ""), breakdown, content };
+  return { id: String(row.id), pillar, score, createdAt: String(row.created_at), verdict: String(row["verdict"] ?? row["score_reasoning"] ?? "Your next move is now clear."), reasoning: String(row["score_reasoning"] ?? ""), breakdown, contentJson: JSON.stringify(row) };
 }
 
 const tableFor: Record<Exclude<Pillar, "evidence">, string> = { clarity: "clarity_sessions", authority: "authority_sessions", reach: "reach_sessions", energy: "energy_sessions", revenue: "revenue_sessions" };
@@ -98,11 +97,11 @@ export const getCareerWorkspace = createServerFn({ method: "POST" }).inputValida
     const row = (rows?.[0] ?? null) as unknown as Record<string, JsonValue> | null;
     if (row) latest[pillar] = assessmentFrom(row, pillar);
   }
-  const entries = (evidence ?? []) as unknown as Array<Record<string, JsonValue>>;
+  const entries = evidence ?? [];
   if (entries.length) {
     const avg = entries.reduce((sum, row) => sum + Number(row.quality_score), 0) / entries.length;
     const quantity = Math.min(40, entries.length * 5); const quality = Math.round(avg * 0.4); const diversity = Math.min(20, new Set(entries.map((row) => row.category)).size * 4);
-    latest.evidence = { id: "vault", pillar: "evidence", score: quantity + quality + diversity, createdAt: String(entries[0].created_at), verdict: `${entries.length} proof points are now working for you.`, reasoning: "Evidence is scored from vault quantity, average quality and category diversity.", breakdown: [{ label: "Quantity", score: quantity, reasoning: `${entries.length} saved achievements` }, { label: "Quality", score: quality, reasoning: `${Math.round(avg)} average bullet quality` }, { label: "Diversity", score: diversity, reasoning: `${new Set(entries.map((row) => row.category)).size} evidence categories` }], content: { entries } };
+    latest.evidence = { id: "vault", pillar: "evidence", score: quantity + quality + diversity, createdAt: String(entries[0].created_at), verdict: `${entries.length} proof points are now working for you.`, reasoning: "Evidence is scored from vault quantity, average quality and category diversity.", breakdown: [{ label: "Quantity", score: quantity, reasoning: `${entries.length} saved achievements` }, { label: "Quality", score: quality, reasoning: `${Math.round(avg)} average bullet quality` }, { label: "Diversity", score: diversity, reasoning: `${new Set(entries.map((row) => row.category)).size} evidence categories` }], contentJson: JSON.stringify({ entries }) };
   }
   const scores = Object.fromEntries(Object.entries(latest).map(([pillar, result]) => [pillar, result?.score]));
   return { member, latest, scores, evidence: entries, rewrites: rewrites ?? [] };
@@ -152,7 +151,7 @@ export const generateCareerAssessment = createServerFn({ method: "POST" }).input
 export const polishEvidence = createServerFn({ method: "POST" }).inputValidator((v) => tokenInput.extend({ rawInput: z.string().min(10), numbers: z.string().optional(), category: z.string().min(1) }).parse(v)).handler(async ({ data }) => {
   assertMember(data.memberId, data.token);
   const output = await callAi("You are an executive resume writer. Turn the achievement into one concise Q-STAR bullet. Never invent numbers; use [ADD NUMBER: e.g. X%] where proof is missing. Return JSON keys polished_bullet, quality_score (0-100), quality_note.", JSON.parse(JSON.stringify(data)) as Record<string, JsonValue>);
-  return output;
+  return { polished_bullet: String(output.polished_bullet ?? ""), quality_score: Number(output.quality_score ?? 0), quality_note: String(output.quality_note ?? "") };
 });
 
 export const saveEvidence = createServerFn({ method: "POST" }).inputValidator((v) => tokenInput.extend({ id: z.string().uuid().optional(), rawInput: z.string().min(1), polishedBullet: z.string().min(1), qualityScore: z.number().min(0).max(100), qualityNote: z.string(), category: z.string() }).parse(v)).handler(async ({ data }) => {

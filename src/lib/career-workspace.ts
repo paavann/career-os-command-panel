@@ -98,13 +98,16 @@ export const PILLAR_CONFIG: Record<Pillar, PillarConfig> = {
 export type Assessment = {
   id: string; pillar: Pillar; score: number; createdAt: string; verdict: string;
   reasoning: string; breakdown: Array<{ label: string; score: number; reasoning: string }>;
-  content: Record<string, JsonValue>;
+  contentJson: string;
 };
+
+export type EvidenceEntry = { id: string; category: string; polished_bullet: string; quality_score: number; quality_note: string; raw_input: string; created_at: string };
+export type EnergyRewrite = { id: string; context_type: string; rewritten_text: string; original_text: string; created_at: string };
 
 export type WorkspaceSnapshot = {
   member: { id: string; role_title: string | null; industry: string | null; career_goal: string | null; target_timeline: string | null };
   scores: Partial<Record<Pillar, number>>;
   latest: Partial<Record<Pillar, Assessment>>;
-  evidence: Array<Record<string, JsonValue>>;
-  rewrites: Array<Record<string, JsonValue>>;
+  evidence: EvidenceEntry[];
+  rewrites: EnergyRewrite[];
 };
