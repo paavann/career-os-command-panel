@@ -1,5 +1,6 @@
 export const PILLARS = ["clarity", "authority", "reach", "evidence", "energy", "revenue"] as const;
 export type Pillar = (typeof PILLARS)[number];
+export type JsonValue = string | number | boolean | null | JsonValue[] | { [key: string]: JsonValue };
 
 export type Field = {
   key: string;
@@ -97,13 +98,13 @@ export const PILLAR_CONFIG: Record<Pillar, PillarConfig> = {
 export type Assessment = {
   id: string; pillar: Pillar; score: number; createdAt: string; verdict: string;
   reasoning: string; breakdown: Array<{ label: string; score: number; reasoning: string }>;
-  content: Record<string, unknown>;
+  content: Record<string, JsonValue>;
 };
 
 export type WorkspaceSnapshot = {
   member: { id: string; role_title: string | null; industry: string | null; career_goal: string | null; target_timeline: string | null };
   scores: Partial<Record<Pillar, number>>;
   latest: Partial<Record<Pillar, Assessment>>;
-  evidence: Array<Record<string, unknown>>;
-  rewrites: Array<Record<string, unknown>>;
+  evidence: Array<Record<string, JsonValue>>;
+  rewrites: Array<Record<string, JsonValue>>;
 };

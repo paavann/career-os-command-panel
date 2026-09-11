@@ -1,7 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { createHmac, createHash, timingSafeEqual } from "node:crypto";
 import { z } from "zod";
-import { PILLARS, type Assessment, type Pillar } from "./career-workspace";
+import { PILLARS, type Assessment, type JsonValue, type Pillar } from "./career-workspace";
 
 const idSchema = z.string().uuid();
 const tokenInput = z.object({ memberId: idSchema, token: z.string().min(20) });
@@ -27,15 +27,15 @@ function asArray(value: unknown): string[] {
   return Array.isArray(value) ? value.map(String) : [];
 }
 
-function cleanJson(text: string): Record<string, unknown> {
+function cleanJson(text: string): Record<string, JsonValue> {
   const fenced = text.match(/```(?:json)?\s*([\s\S]*?)```/i)?.[1] ?? text;
   const start = fenced.indexOf("{");
   const end = fenced.lastIndexOf("}");
   if (start < 0 || end < start) throw new Error("The analysis returned an incomplete result. Please try again.");
-  return JSON.parse(fenced.slice(start, end + 1)) as Record<string, unknown>;
+  return JSON.parse(fenced.slice(start, end + 1)) as Record<string, JsonValue>;
 }
 
-async function callAi(system: string, input: Record<string, unknown>) {
+async function callAi(system: string, input: Record<string, JsonValue>) {
   const key = process.env['LOVABLE_API_KEY'];
   if (!key) throw new Error("Lovable AI is not configured.");
   const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
@@ -72,8 +72,8 @@ export const touchCareerMember = createServerFn({ method: "POST" }).inputValidat
   return { ok: true };
 });
 
-function assessmentFrom(row: Record<string, unknown>, pillar: Pillar): Assessment {
-  const content = row as Record<string, unknown>;
+function assessmentFrom(row: Record<string, JsonValue>, pillar: Pillar): Assessment {
+  const content = row;
   const score = Number(row[`${pillar}_score`] ?? row["total_score"] ?? 0);
   const breakdown = Object.entries(row)
     .filter(([key, value]) => key.endsWith("_score") && key !== `${pillar}_score` && key !== "total_score" && typeof value === "number")
@@ -95,10 +95,10 @@ export const getCareerWorkspace = createServerFn({ method: "POST" }).inputValida
   const latest: Partial<Record<Pillar, Assessment>> = {};
   for (const pillar of ["clarity", "authority", "reach", "energy", "revenue"] as const) {
     const { data: rows } = await db.from(tableFor[pillar] as "clarity_sessions").select("*").eq("member_id", data.memberId).order("created_at", { ascending: false }).limit(1);
-    const row = (rows?.[0] ?? null) as unknown as Record<string, unknown> | null;
+    const row = (rows?.[0] ?? null) as unknown as Record<string, JsonValue> | null;
     if (row) latest[pillar] = assessmentFrom(row, pillar);
   }
-  const entries = (evidence ?? []) as unknown as Array<Record<string, unknown>>;
+  const entries = (evidence ?? []) as unknown as Array<Record<string, JsonValue>>;
   if (entries.length) {
     const avg = entries.reduce((sum, row) => sum + Number(row.quality_score), 0) / entries.length;
     const quantity = Math.min(40, entries.length * 5); const quality = Math.round(avg * 0.4); const diversity = Math.min(20, new Set(entries.map((row) => row.category)).size * 4);
@@ -119,7 +119,7 @@ export const askCareerFollowup = createServerFn({ method: "POST" }).inputValidat
 export const generateCareerAssessment = createServerFn({ method: "POST" }).inputValidator((v) => analysisInput.parse(v)).handler(async ({ data }) => {
   assertMember(data.memberId, data.token);
   const db = await admin();
-  const context: Record<string, unknown> = { ...data.formData };
+  const context = JSON.parse(JSON.stringify(data.formData)) as Record<string, JsonValue>;
   const { data: member } = await db.from("members").select("*").eq("id", data.memberId).single();
   if (data.pillar !== "clarity") {
     const { data: clarity } = await db.from("clarity_sessions").select("persona_statement,north_star_role").eq("member_id", data.memberId).order("created_at", { ascending: false }).limit(1).maybeSingle();
@@ -136,28 +136,28 @@ export const generateCareerAssessment = createServerFn({ method: "POST" }).input
     energy: "You are BlueChip CareerOS's Executive Presence Coach. Score five elements 0-20. Return JSON keys: energy_score, clarity_thought_score, command_score, composure_score, conviction_score, consideration_score, score_reasoning, verdict, presence_audit, five_fixes (5), weekly_practice (Monday-Friday actions). The energy_score is the sum.",
     revenue: "You are BlueChip CareerOS's India Compensation Strategist. Ground estimates in current Indian market conventions and clearly label estimates when live verification is unavailable. Return JSON keys: revenue_score, market_alignment_score, negotiation_readiness_score, score_reasoning, verdict, range_low, range_median, range_high (numbers in INR Lakhs), current_ctc, gap_analysis, leverage_points (3-5), sources (array of source names/URLs or labeled estimate basis), transparency_line.",
   };
-  let output: Record<string, unknown>;
+  let output: Record<string, JsonValue>;
   try { output = await callAi(prompts[data.pillar], { ...context, followup_transcript: data.followupTranscript }); }
   catch (error) { throw error instanceof Error ? error : new Error("BlueChip AI could not complete this analysis."); }
-  const row: Record<string, unknown> = { member_id: data.memberId, form_data: data.formData, followup_transcript: data.followupTranscript, ...output };
+  const row: Record<string, JsonValue> = { member_id: data.memberId, form_data: JSON.parse(JSON.stringify(data.formData)) as JsonValue, followup_transcript: data.followupTranscript, ...output };
   if (data.pillar === "energy") row.practice_checks = {};
   if (data.pillar === "clarity") {
     await db.from("members").update({ role_title: String(data.formData.role_title ?? ""), industry: String(data.formData.industry ?? ""), years_experience: Number(data.formData.years_experience ?? 0), career_goal: String(data.formData.career_goal ?? ""), target_timeline: String(data.formData.target_timeline ?? "") }).eq("id", data.memberId);
   }
   const { data: saved, error } = await db.from(tableFor[data.pillar] as "clarity_sessions").insert(row as never).select("*").single();
   if (error || !saved) throw new Error(error?.message ?? "The assessment could not be saved.");
-  return assessmentFrom(saved as unknown as Record<string, unknown>, data.pillar);
+  return assessmentFrom(saved as unknown as Record<string, JsonValue>, data.pillar);
 });
 
 export const polishEvidence = createServerFn({ method: "POST" }).inputValidator((v) => tokenInput.extend({ rawInput: z.string().min(10), numbers: z.string().optional(), category: z.string().min(1) }).parse(v)).handler(async ({ data }) => {
   assertMember(data.memberId, data.token);
-  const output = await callAi("You are an executive resume writer. Turn the achievement into one concise Q-STAR bullet. Never invent numbers; use [ADD NUMBER: e.g. X%] where proof is missing. Return JSON keys polished_bullet, quality_score (0-100), quality_note.", data);
+  const output = await callAi("You are an executive resume writer. Turn the achievement into one concise Q-STAR bullet. Never invent numbers; use [ADD NUMBER: e.g. X%] where proof is missing. Return JSON keys polished_bullet, quality_score (0-100), quality_note.", JSON.parse(JSON.stringify(data)) as Record<string, JsonValue>);
   return output;
 });
 
 export const saveEvidence = createServerFn({ method: "POST" }).inputValidator((v) => tokenInput.extend({ id: z.string().uuid().optional(), rawInput: z.string().min(1), polishedBullet: z.string().min(1), qualityScore: z.number().min(0).max(100), qualityNote: z.string(), category: z.string() }).parse(v)).handler(async ({ data }) => {
   assertMember(data.memberId, data.token); const db = await admin();
-  const row = { member_id: data.memberId, raw_input: data.rawInput, polished_bullet: data.polishedBullet, quality_score: data.qualityScore, quality_note: data.qualityNote, category: data.category, updated_at: new Date().toISOString() };
+  const row = { member_id: data.memberId, raw_input: data.rawInput, polished_bullet: data.polishedBullet, quality_score: data.qualityScore, quality_note: data.qualityNote, category: data.category, edited_at: new Date().toISOString() };
   const result = data.id ? await db.from("evidence_entries").update(row).eq("id", data.id).eq("member_id", data.memberId) : await db.from("evidence_entries").insert(row);
   if (result.error) throw new Error(result.error.message); return { ok: true };
 });
@@ -168,7 +168,7 @@ export const deleteEvidence = createServerFn({ method: "POST" }).inputValidator(
 
 export const rewriteExecutiveMessage = createServerFn({ method: "POST" }).inputValidator((v) => tokenInput.extend({ text: z.string().min(10), contextType: z.string().min(1) }).parse(v)).handler(async ({ data }) => {
   assertMember(data.memberId, data.token);
-  const output = await callAi("You are an Indian corporate executive communication coach. Preserve meaning, remove hedging, increase clarity and authority. Return JSON keys rewritten_text and what_changed (array of specific changes).", data);
+  const output = await callAi("You are an Indian corporate executive communication coach. Preserve meaning, remove hedging, increase clarity and authority. Return JSON keys rewritten_text and what_changed (array of specific changes).", JSON.parse(JSON.stringify(data)) as Record<string, JsonValue>);
   const db = await admin(); const { data: saved, error } = await db.from("energy_rewrites").insert({ member_id: data.memberId, original_text: data.text, context_type: data.contextType, rewritten_text: String(output.rewritten_text ?? ""), what_changed: asArray(output.what_changed) }).select("*").single();
   if (error) throw new Error(error.message); return saved;
 });
