@@ -24,7 +24,7 @@ const baseGroups: NavGroup[] = [
     label: "Strategize",
     items: [
       { to: "/journey", label: "Journey", icon: Compass },
-      { to: "/tools", label: "C.A.R.E.E.R.", icon: Sparkles },
+      { to: "/career", label: "C.A.R.E.E.R.", icon: Sparkles },
     ],
   },
   {

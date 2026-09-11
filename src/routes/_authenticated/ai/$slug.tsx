@@ -14,9 +14,6 @@ export const Route = createFileRoute("/_authenticated/ai/$slug")({
     const c = getCopilot(params.slug);
     return { meta: [{ title: `${c?.name ?? "AI Copilot"} — Bluechip CareerOS™` }] };
   },
-  beforeLoad: ({ params }) => {
-    if (!getCopilot(params.slug)) throw notFound();
-  },
   component: CopilotChat,
 });
 
@@ -24,7 +21,8 @@ type Msg = { id: string; role: string; content: string };
 
 function CopilotChat() {
   const { slug } = Route.useParams();
-  const copilot = getCopilot(slug)!;
+  const copilot = getCopilot(slug);
+  if (!copilot) throw notFound();
   const qc = useQueryClient();
   const listFn = useServerFn(listConversations);
   const getFn = useServerFn(getConversation);
