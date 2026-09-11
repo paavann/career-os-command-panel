@@ -76,6 +76,71 @@ export type Database = {
           },
         ]
       }
+      authority_sessions: {
+        Row: {
+          authority_audit: string
+          authority_score: number
+          consistency_score: number
+          created_at: string
+          followup_transcript: Json
+          form_data: Json
+          framework_illustration: string
+          framework_name: string
+          framework_strength_score: number
+          framework_structure: Json
+          id: string
+          member_id: string
+          recognition_score: number
+          score_reasoning: string
+          this_weeks_action: string
+          thought_leadership_score: number
+        }
+        Insert: {
+          authority_audit: string
+          authority_score: number
+          consistency_score: number
+          created_at?: string
+          followup_transcript?: Json
+          form_data?: Json
+          framework_illustration: string
+          framework_name: string
+          framework_strength_score: number
+          framework_structure?: Json
+          id?: string
+          member_id: string
+          recognition_score: number
+          score_reasoning: string
+          this_weeks_action: string
+          thought_leadership_score: number
+        }
+        Update: {
+          authority_audit?: string
+          authority_score?: number
+          consistency_score?: number
+          created_at?: string
+          followup_transcript?: Json
+          form_data?: Json
+          framework_illustration?: string
+          framework_name?: string
+          framework_strength_score?: number
+          framework_structure?: Json
+          id?: string
+          member_id?: string
+          recognition_score?: number
+          score_reasoning?: string
+          this_weeks_action?: string
+          thought_leadership_score?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "authority_sessions_member_id_fkey"
+            columns: ["member_id"]
+            isOneToOne: false
+            referencedRelation: "members"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       career_scores: {
         Row: {
           authority: number
@@ -108,6 +173,218 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      clarity_sessions: {
+        Row: {
+          clarity_score: number
+          created_at: string
+          followup_transcript: Json
+          form_data: Json
+          id: string
+          market_gap_analysis: string
+          market_gap_score: number
+          member_id: string
+          north_star_role: string
+          persona_statement: string
+          positioning_headlines: Json
+          power_signals: Json
+          score_reasoning: string
+          specificity_score: number
+          upskill_plan: string
+          velocity_score: number
+        }
+        Insert: {
+          clarity_score: number
+          created_at?: string
+          followup_transcript?: Json
+          form_data?: Json
+          id?: string
+          market_gap_analysis: string
+          market_gap_score: number
+          member_id: string
+          north_star_role: string
+          persona_statement: string
+          positioning_headlines?: Json
+          power_signals?: Json
+          score_reasoning: string
+          specificity_score: number
+          upskill_plan: string
+          velocity_score: number
+        }
+        Update: {
+          clarity_score?: number
+          created_at?: string
+          followup_transcript?: Json
+          form_data?: Json
+          id?: string
+          market_gap_analysis?: string
+          market_gap_score?: number
+          member_id?: string
+          north_star_role?: string
+          persona_statement?: string
+          positioning_headlines?: Json
+          power_signals?: Json
+          score_reasoning?: string
+          specificity_score?: number
+          upskill_plan?: string
+          velocity_score?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "clarity_sessions_member_id_fkey"
+            columns: ["member_id"]
+            isOneToOne: false
+            referencedRelation: "members"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      energy_rewrites: {
+        Row: {
+          context_type: string
+          created_at: string
+          id: string
+          member_id: string
+          original_text: string
+          rewritten_text: string
+          what_changed: Json
+        }
+        Insert: {
+          context_type: string
+          created_at?: string
+          id?: string
+          member_id: string
+          original_text: string
+          rewritten_text: string
+          what_changed?: Json
+        }
+        Update: {
+          context_type?: string
+          created_at?: string
+          id?: string
+          member_id?: string
+          original_text?: string
+          rewritten_text?: string
+          what_changed?: Json
+        }
+        Relationships: [
+          {
+            foreignKeyName: "energy_rewrites_member_id_fkey"
+            columns: ["member_id"]
+            isOneToOne: false
+            referencedRelation: "members"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      energy_sessions: {
+        Row: {
+          clarity_thought_score: number
+          command_room_score: number
+          composure_score: number
+          consideration_score: number
+          conviction_score: number
+          created_at: string
+          energy_score: number
+          fixes_list: Json
+          followup_transcript: Json
+          form_data: Json
+          id: string
+          member_id: string
+          practice_checks: Json
+          presence_audit: string
+          score_reasoning: string
+          weekly_practice: Json
+        }
+        Insert: {
+          clarity_thought_score: number
+          command_room_score: number
+          composure_score: number
+          consideration_score: number
+          conviction_score: number
+          created_at?: string
+          energy_score: number
+          fixes_list?: Json
+          followup_transcript?: Json
+          form_data?: Json
+          id?: string
+          member_id: string
+          practice_checks?: Json
+          presence_audit: string
+          score_reasoning: string
+          weekly_practice?: Json
+        }
+        Update: {
+          clarity_thought_score?: number
+          command_room_score?: number
+          composure_score?: number
+          consideration_score?: number
+          conviction_score?: number
+          created_at?: string
+          energy_score?: number
+          fixes_list?: Json
+          followup_transcript?: Json
+          form_data?: Json
+          id?: string
+          member_id?: string
+          practice_checks?: Json
+          presence_audit?: string
+          score_reasoning?: string
+          weekly_practice?: Json
+        }
+        Relationships: [
+          {
+            foreignKeyName: "energy_sessions_member_id_fkey"
+            columns: ["member_id"]
+            isOneToOne: false
+            referencedRelation: "members"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      evidence_entries: {
+        Row: {
+          category: string
+          created_at: string
+          edited_at: string
+          id: string
+          member_id: string
+          polished_bullet: string
+          quality_note: string
+          quality_score: number
+          raw_input: string
+        }
+        Insert: {
+          category: string
+          created_at?: string
+          edited_at?: string
+          id?: string
+          member_id: string
+          polished_bullet: string
+          quality_note?: string
+          quality_score: number
+          raw_input: string
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          edited_at?: string
+          id?: string
+          member_id?: string
+          polished_bullet?: string
+          quality_note?: string
+          quality_score?: number
+          raw_input?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "evidence_entries_member_id_fkey"
+            columns: ["member_id"]
+            isOneToOne: false
+            referencedRelation: "members"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       goal_mission_completions: {
         Row: {
@@ -208,6 +485,48 @@ export type Database = {
           target_start_date?: string | null
           updated_at?: string
           user_id?: string
+        }
+        Relationships: []
+      }
+      members: {
+        Row: {
+          access_code_hash: string
+          career_goal: string | null
+          created_at: string
+          first_seen: string
+          id: string
+          industry: string | null
+          last_seen: string
+          role_title: string | null
+          target_timeline: string | null
+          updated_at: string
+          years_experience: number | null
+        }
+        Insert: {
+          access_code_hash: string
+          career_goal?: string | null
+          created_at?: string
+          first_seen?: string
+          id: string
+          industry?: string | null
+          last_seen?: string
+          role_title?: string | null
+          target_timeline?: string | null
+          updated_at?: string
+          years_experience?: number | null
+        }
+        Update: {
+          access_code_hash?: string
+          career_goal?: string | null
+          created_at?: string
+          first_seen?: string
+          id?: string
+          industry?: string | null
+          last_seen?: string
+          role_title?: string | null
+          target_timeline?: string | null
+          updated_at?: string
+          years_experience?: number | null
         }
         Relationships: []
       }
@@ -336,6 +655,127 @@ export type Database = {
           years_experience?: number | null
         }
         Relationships: []
+      }
+      reach_sessions: {
+        Row: {
+          brand_score: number
+          created_at: string
+          find_people_score: number
+          followup_transcript: Json
+          form_data: Json
+          id: string
+          insights_score: number
+          member_id: string
+          reach_score: number
+          relationships_score: number
+          score_reasoning: string
+          seven_day_sprint: Json
+          thirty_day_trajectory: Json
+          visibility_audit: string
+        }
+        Insert: {
+          brand_score: number
+          created_at?: string
+          find_people_score: number
+          followup_transcript?: Json
+          form_data?: Json
+          id?: string
+          insights_score: number
+          member_id: string
+          reach_score: number
+          relationships_score: number
+          score_reasoning: string
+          seven_day_sprint?: Json
+          thirty_day_trajectory?: Json
+          visibility_audit: string
+        }
+        Update: {
+          brand_score?: number
+          created_at?: string
+          find_people_score?: number
+          followup_transcript?: Json
+          form_data?: Json
+          id?: string
+          insights_score?: number
+          member_id?: string
+          reach_score?: number
+          relationships_score?: number
+          score_reasoning?: string
+          seven_day_sprint?: Json
+          thirty_day_trajectory?: Json
+          visibility_audit?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reach_sessions_member_id_fkey"
+            columns: ["member_id"]
+            isOneToOne: false
+            referencedRelation: "members"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      revenue_sessions: {
+        Row: {
+          created_at: string
+          current_ctc: number
+          form_data: Json
+          gap_analysis: string
+          id: string
+          leverage_points: Json
+          market_alignment_score: number
+          market_range_high: number
+          market_range_low: number
+          market_range_median: number
+          member_id: string
+          negotiation_readiness_score: number
+          revenue_score: number
+          score_reasoning: string
+          sources_used: Json
+        }
+        Insert: {
+          created_at?: string
+          current_ctc: number
+          form_data?: Json
+          gap_analysis: string
+          id?: string
+          leverage_points?: Json
+          market_alignment_score: number
+          market_range_high: number
+          market_range_low: number
+          market_range_median: number
+          member_id: string
+          negotiation_readiness_score: number
+          revenue_score: number
+          score_reasoning: string
+          sources_used?: Json
+        }
+        Update: {
+          created_at?: string
+          current_ctc?: number
+          form_data?: Json
+          gap_analysis?: string
+          id?: string
+          leverage_points?: Json
+          market_alignment_score?: number
+          market_range_high?: number
+          market_range_low?: number
+          market_range_median?: number
+          member_id?: string
+          negotiation_readiness_score?: number
+          revenue_score?: number
+          score_reasoning?: string
+          sources_used?: Json
+        }
+        Relationships: [
+          {
+            foreignKeyName: "revenue_sessions_member_id_fkey"
+            columns: ["member_id"]
+            isOneToOne: false
+            referencedRelation: "members"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       user_courses: {
         Row: {
