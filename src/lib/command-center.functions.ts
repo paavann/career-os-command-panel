@@ -153,6 +153,7 @@ export const getCommandCenter = createServerFn({ method: "GET" })
         .from("goal_mission_completions")
         .select("mission_slug, xp_awarded, completed_on")
         .eq("user_id", userId)
+        .like("mission_slug", "%:weekly:%")
         .gte("completed_on", weekStart),
     ]);
 
