@@ -141,6 +141,53 @@ export type Database = {
           },
         ]
       }
+      career_proofs: {
+        Row: {
+          created_at: string
+          description: string
+          id: string
+          impact: string
+          metric: string
+          proof_date: string | null
+          proof_type: string
+          title: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string
+          id?: string
+          impact?: string
+          metric?: string
+          proof_date?: string | null
+          proof_type: string
+          title: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          description?: string
+          id?: string
+          impact?: string
+          metric?: string
+          proof_date?: string | null
+          proof_type?: string
+          title?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "career_proofs_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       career_scores: {
         Row: {
           authority: number
@@ -953,6 +1000,47 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      weekly_reviews: {
+        Row: {
+          blockers: string
+          created_at: string
+          id: string
+          moved_forward: string
+          next_priority: string
+          updated_at: string
+          user_id: string
+          week_start: string
+        }
+        Insert: {
+          blockers?: string
+          created_at?: string
+          id?: string
+          moved_forward?: string
+          next_priority?: string
+          updated_at?: string
+          user_id: string
+          week_start: string
+        }
+        Update: {
+          blockers?: string
+          created_at?: string
+          id?: string
+          moved_forward?: string
+          next_priority?: string
+          updated_at?: string
+          user_id?: string
+          week_start?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "weekly_reviews_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       xp_events: {
         Row: {
