@@ -47,6 +47,48 @@ export type FoundationAction = {
   cta: "checkup" | "goal" | "evidence";
 };
 
+export type CareerProof = {
+  id: string;
+  title: string;
+  proof_type: string;
+  description: string;
+  impact: string;
+  metric: string;
+  proof_date: string | null;
+  created_at: string;
+};
+
+export type WeeklyReview = {
+  id: string;
+  week_start: string;
+  moved_forward: string;
+  blockers: string;
+  next_priority: string;
+};
+
+const proofSchema = z.object({
+  id: z.string().uuid().optional(),
+  title: z.string().trim().min(1).max(160),
+  proofType: z.string().trim().min(1).max(60),
+  description: z.string().trim().max(1200).default(""),
+  impact: z.string().trim().max(600).default(""),
+  metric: z.string().trim().max(160).default(""),
+  proofDate: z.string().date().nullable().optional(),
+});
+
+const weeklyReviewSchema = z.object({
+  movedForward: z.string().trim().max(1200).default(""),
+  blockers: z.string().trim().max(1200).default(""),
+  nextPriority: z.string().trim().max(600).default(""),
+});
+
+function startOfWeekIso() {
+  const date = new Date();
+  const day = date.getUTCDay();
+  date.setUTCDate(date.getUTCDate() - (day === 0 ? 6 : day - 1));
+  return date.toISOString().slice(0, 10);
+}
+
 const FOUNDATION_ACTIONS = [
   {
     slug: "career-checkup" as const,
@@ -75,7 +117,8 @@ export const getCommandCenter = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
     const { supabase, userId } = context;
-    const [goalRes, completionRes, xpRes] = await Promise.all([
+    const weekStart = startOfWeekIso();
+    const [goalRes, completionRes, xpRes, proofRes, reviewRes, weeklyCompletionRes] = await Promise.all([
       supabase
         .from("diamond_goals")
         .select("id, title, target_role, target_date, timeline, progress, status, goal_milestones(id, title, description, target_date, completed, completed_at, sort_order)")
@@ -93,12 +136,33 @@ export const getCommandCenter = createServerFn({ method: "GET" })
         .select("id, amount, source, created_at")
         .eq("user_id", userId)
         .order("created_at", { ascending: false })
-        .limit(5),
+        .limit(50),
+      supabase
+        .from("career_proofs")
+        .select("id, title, proof_type, description, impact, metric, proof_date, created_at")
+        .eq("user_id", userId)
+        .order("proof_date", { ascending: false, nullsFirst: false })
+        .order("created_at", { ascending: false }),
+      supabase
+        .from("weekly_reviews")
+        .select("id, week_start, moved_forward, blockers, next_priority")
+        .eq("user_id", userId)
+        .eq("week_start", weekStart)
+        .maybeSingle(),
+      supabase
+        .from("goal_mission_completions")
+        .select("mission_slug, xp_awarded, completed_on")
+        .eq("user_id", userId)
+        .like("mission_slug", "%:weekly:%")
+        .gte("completed_on", weekStart),
     ]);
 
     if (goalRes.error) throw new Error(goalRes.error.message);
     if (completionRes.error) throw new Error(completionRes.error.message);
     if (xpRes.error) throw new Error(xpRes.error.message);
+    if (proofRes.error) throw new Error(proofRes.error.message);
+    if (reviewRes.error) throw new Error(reviewRes.error.message);
+    if (weeklyCompletionRes.error) throw new Error(weeklyCompletionRes.error.message);
 
     const row = goalRes.data as any;
     const goal: DiamondGoal | null = row
@@ -122,7 +186,62 @@ export const getCommandCenter = createServerFn({ method: "GET" })
         completed: completed.has(`diamond-foundation:${action.slug}`),
       })) satisfies FoundationAction[],
       recentXp: xpRes.data ?? [],
+      proofs: (proofRes.data ?? []) satisfies CareerProof[],
+      weeklyReview: (reviewRes.data ?? null) as WeeklyReview | null,
+      weeklyProgress: {
+        weekStart,
+        completedActions: (weeklyCompletionRes.data ?? []).length,
+        completedSlugs: (weeklyCompletionRes.data ?? []).map((item) => item.mission_slug.split(":weekly:")[0]),
+        xp: (xpRes.data ?? [])
+          .filter((event) => event.created_at.slice(0, 10) >= weekStart)
+          .reduce((sum, event) => sum + event.amount, 0),
+      },
     };
+  });
+
+export const saveCareerProof = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input) => proofSchema.parse(input))
+  .handler(async ({ data, context }) => {
+    const row = {
+      user_id: context.userId,
+      title: data.title,
+      proof_type: data.proofType,
+      description: data.description,
+      impact: data.impact,
+      metric: data.metric,
+      proof_date: data.proofDate ?? null,
+    };
+    const query = data.id
+      ? context.supabase.from("career_proofs").update(row).eq("id", data.id).eq("user_id", context.userId)
+      : context.supabase.from("career_proofs").insert(row);
+    const { error } = await query;
+    if (error) throw new Error(error.message);
+    return { ok: true };
+  });
+
+export const deleteCareerProof = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input) => z.object({ id: z.string().uuid() }).parse(input))
+  .handler(async ({ data, context }) => {
+    const { error } = await context.supabase.from("career_proofs").delete().eq("id", data.id).eq("user_id", context.userId);
+    if (error) throw new Error(error.message);
+    return { ok: true };
+  });
+
+export const saveWeeklyReview = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input) => weeklyReviewSchema.parse(input))
+  .handler(async ({ data, context }) => {
+    const { error } = await context.supabase.from("weekly_reviews").upsert({
+      user_id: context.userId,
+      week_start: startOfWeekIso(),
+      moved_forward: data.movedForward,
+      blockers: data.blockers,
+      next_priority: data.nextPriority,
+    }, { onConflict: "user_id,week_start" });
+    if (error) throw new Error(error.message);
+    return { ok: true };
   });
 
 export const saveDiamondGoal = createServerFn({ method: "POST" })

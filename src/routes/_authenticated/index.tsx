@@ -4,15 +4,14 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import {
   Sparkles, ArrowUpRight, Target, Radio, Award, BarChart3, Banknote,
-  CheckCircle2, Circle, Trophy, Radar, Activity, Loader2,
+  CheckCircle2, Trophy, Radar, Activity, Loader2,
 } from "lucide-react";
 import { toast } from "sonner";
 import { useMe } from "@/components/layout/AppShell";
-import { completeMission, completeGoalMission, getLeaderboard } from "@/lib/me.functions";
+import { completeMission, getLeaderboard } from "@/lib/me.functions";
 import { TodaysBrief } from "@/components/dashboard/TodaysBrief";
-import { trackForGoal } from "@/lib/goal-tracks";
 import { EngineModal } from "@/components/engines/EngineModal";
-import { DiamondCommandFoundation } from "@/components/dashboard/DiamondCommandFoundation";
+import { CareerExecutionEngine } from "@/components/dashboard/CareerExecutionEngine";
 import type { PillarKey } from "@/lib/engines";
 
 export const Route = createFileRoute("/_authenticated/")({
@@ -58,7 +57,6 @@ function Dashboard() {
   const { data, isLoading } = useMe();
   const qc = useQueryClient();
   const complete = useServerFn(completeMission);
-  const completeGoal = useServerFn(completeGoalMission);
   const fetchLb = useServerFn(getLeaderboard);
   const { data: lb } = useQuery({ queryKey: ["leaderboard"], queryFn: () => fetchLb(), staleTime: 30_000 });
   const [openEngine, setOpenEngine] = useState<PillarKey | null>(null);
@@ -76,11 +74,6 @@ function Dashboard() {
     mutationFn: (id: string) => complete({ data: { userMissionId: id } }),
     onSuccess, onError,
   });
-  const goalMut = useMutation({
-    mutationFn: (slug: string) => completeGoal({ data: { slug } }),
-    onSuccess, onError,
-  });
-
   if (isLoading || !data) {
     return <div className="max-w-7xl mx-auto px-6 py-20 grid place-items-center"><Loader2 className="size-5 animate-spin" /></div>;
   }
@@ -90,11 +83,6 @@ function Dashboard() {
   const currentLevelIdx = Math.min(journey.length - 1, Math.max(0, p.level - 1));
   const progressPct = ((currentLevelIdx) / (journey.length - 1)) * 100;
   const lbRows = (lb?.rows ?? []).slice(0, 5);
-
-  // Goal-track missions
-  const track = trackForGoal(p.primary_goal);
-  const doneSet = new Set(data.goalCompletionsToday);
-  const trackDoneCount = track.missions.filter((m) => doneSet.has(m.slug)).length;
 
   // Weakest pillar
   const pillars = [
@@ -146,7 +134,7 @@ function Dashboard() {
         <TodaysBrief data={data} />
       </section>
 
-      <DiamondCommandFoundation data={data} openEngine={setOpenEngine} />
+      <CareerExecutionEngine data={data} openEngine={setOpenEngine} />
 
       <section className="grid grid-cols-1 lg:grid-cols-12 gap-6 animate-slide-up [animation-delay:100ms]">
         <div className="lg:col-span-8 glass rounded-3xl p-8 relative overflow-hidden">
@@ -217,38 +205,9 @@ function Dashboard() {
           </div>
 
           <div className="glass rounded-3xl p-6">
-            <div className="flex items-center justify-between mb-1">
-              <h3 className="text-sm font-semibold">Daily Missions</h3>
-              <span className="text-[10px] font-mono text-muted-foreground">{trackDoneCount} / {track.missions.length}</span>
-            </div>
-            <p className="text-[10px] font-mono uppercase tracking-widest text-electric mb-4">
-              {track.goal} track
-            </p>
-            <div className="space-y-2">
-              {track.missions.map((m) => {
-                const done = doneSet.has(m.slug);
-                return (
-                  <button
-                    key={m.slug}
-                    disabled={done || goalMut.isPending}
-                    onClick={() => goalMut.mutate(m.slug)}
-                    className={`w-full text-left flex items-center gap-3 p-2.5 rounded-lg transition-colors ${
-                      done ? "opacity-60" : "hover:bg-accent/40 cursor-pointer"
-                    }`}
-                  >
-                    {done ? <CheckCircle2 className="size-5 text-electric shrink-0" /> : <Circle className="size-5 text-muted-foreground shrink-0" />}
-                    <div className="flex-1 min-w-0">
-                      <div className={`text-sm truncate ${done ? "line-through text-muted-foreground" : ""}`}>{m.title}</div>
-                      <div className="text-[9px] font-mono uppercase tracking-widest text-muted-foreground/70">{m.pillar}</div>
-                    </div>
-                    <span className="text-[10px] font-mono font-bold text-gold bg-gold/10 px-2 py-0.5 rounded shrink-0">+{m.xp}</span>
-                  </button>
-                );
-              })}
-            </div>
-            <Link to="/missions" className="block text-center mt-3 text-[10px] font-mono uppercase tracking-widest text-electric hover:underline">
-              All missions →
-            </Link>
+            <h3 className="text-sm font-semibold">Mission library</h3>
+            <p className="mt-2 text-sm text-muted-foreground">Explore additional daily missions after completing this week's three priorities.</p>
+            <Link to="/missions" className="mt-5 inline-flex items-center gap-1 text-[10px] font-mono uppercase tracking-widest text-electric hover:underline">All missions <ArrowUpRight className="size-3" /></Link>
           </div>
         </div>
       </section>
