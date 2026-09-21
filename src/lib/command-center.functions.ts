@@ -190,7 +190,7 @@ export const getCommandCenter = createServerFn({ method: "GET" })
       weeklyProgress: {
         weekStart,
         completedActions: (weeklyCompletionRes.data ?? []).length,
-        completedSlugs: (weeklyCompletionRes.data ?? []).map((item) => item.mission_slug),
+        completedSlugs: (weeklyCompletionRes.data ?? []).map((item) => item.mission_slug.split(":weekly:")[0]),
         xp: (xpRes.data ?? [])
           .filter((event) => event.created_at.slice(0, 10) >= weekStart)
           .reduce((sum, event) => sum + event.amount, 0),

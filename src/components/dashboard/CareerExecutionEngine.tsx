@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { ArrowRight, CalendarDays, Check, CheckCircle2, Circle, ClipboardCheck, FileText, Flag, Gem, Loader2, Pencil, Plus, Sparkles, Target, Trash2, Trophy, Zap } from "lucide-react";
+import { ArrowRight, Check, CheckCircle2, Circle, ClipboardCheck, FileText, Flag, Gem, Loader2, Pencil, Plus, Target, Trash2, Zap } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
@@ -70,7 +70,7 @@ export function CareerExecutionEngine({ data, openEngine }: Props) {
 
   const refresh = () => Promise.all([qc.invalidateQueries({ queryKey: ["command-center"] }), qc.invalidateQueries({ queryKey: ["me"] }), qc.invalidateQueries({ queryKey: ["leaderboard"] })]);
   const actionMut = useMutation({
-    mutationFn: (slug: string) => completeGoal({ data: { slug } }),
+    mutationFn: (slug: string) => completeGoal({ data: { slug, cadence: "weekly" } }),
     onSuccess: async (result) => { toast.success(result.alreadyDone ? "Already complete this week" : `Action complete · +${result.xp} XP`); await refresh(); },
     onError: (error: Error) => toast.error(error.message),
   });
