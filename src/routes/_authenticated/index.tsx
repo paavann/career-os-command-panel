@@ -12,6 +12,7 @@ import { completeMission, completeGoalMission, getLeaderboard } from "@/lib/me.f
 import { TodaysBrief } from "@/components/dashboard/TodaysBrief";
 import { trackForGoal } from "@/lib/goal-tracks";
 import { EngineModal } from "@/components/engines/EngineModal";
+import { DiamondCommandFoundation } from "@/components/dashboard/DiamondCommandFoundation";
 import type { PillarKey } from "@/lib/engines";
 
 export const Route = createFileRoute("/_authenticated/")({
@@ -19,6 +20,10 @@ export const Route = createFileRoute("/_authenticated/")({
     meta: [
       { title: "Command Center — Bluechip CareerOS™" },
       { name: "description", content: "Your Career Freedom Command Center. Track your Career Power Index, missions, and growth opportunities." },
+      { property: "og:title", content: "Diamond Command Center — Bluechip CareerOS™" },
+      { property: "og:description", content: "Set your Diamond North Star, complete the next right actions, and see your career progress." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: Dashboard,
@@ -134,12 +139,14 @@ function Dashboard() {
         <p className="text-xs font-mono uppercase tracking-[0.25em] text-electric mb-3">
           Intelligence Briefing · {new Date().toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" })}
         </p>
-        <h1 className="text-4xl md:text-5xl font-display font-extrabold tracking-tight flex flex-wrap items-center gap-3">
-          <span>Welcome back, {p.first_name?.trim() || p.display_name?.split(" ")[0] || "Operator"}.</span>
+        <h1 className="text-4xl md:text-5xl font-display font-extrabold tracking-tight flex flex-wrap items-center gap-3 min-w-0">
+          <span className="min-w-0 max-w-full break-words">Welcome back, {p.first_name?.trim() || p.display_name?.split(" ")[0] || "Operator"}.</span>
           <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-gold/15 border border-gold/40 text-[11px] font-mono uppercase tracking-[0.2em] text-gold">💎 Diamond Member</span>
         </h1>
         <TodaysBrief data={data} />
       </section>
+
+      <DiamondCommandFoundation data={data} openEngine={setOpenEngine} />
 
       <section className="grid grid-cols-1 lg:grid-cols-12 gap-6 animate-slide-up [animation-delay:100ms]">
         <div className="lg:col-span-8 glass rounded-3xl p-8 relative overflow-hidden">
@@ -328,12 +335,13 @@ function Dashboard() {
             );
           })}
         </div>
-        <EngineModal
-          pillar={openEngine}
-          currentScore={openEngine ? s[openEngine] : 0}
-          onClose={() => setOpenEngine(null)}
-        />
       </section>
+
+      <EngineModal
+        pillar={openEngine}
+        currentScore={openEngine ? s[openEngine] : 0}
+        onClose={() => setOpenEngine(null)}
+      />
 
       <section className="grid grid-cols-1 lg:grid-cols-2 gap-6 pb-12 animate-slide-up [animation-delay:400ms]">
         <div className="glass rounded-3xl p-6">

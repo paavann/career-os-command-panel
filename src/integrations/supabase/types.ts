@@ -239,6 +239,53 @@ export type Database = {
           },
         ]
       }
+      diamond_goals: {
+        Row: {
+          created_at: string
+          id: string
+          member_id: string
+          progress: number
+          status: string
+          target_date: string
+          target_role: string | null
+          timeline: string | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          member_id: string
+          progress?: number
+          status?: string
+          target_date: string
+          target_role?: string | null
+          timeline?: string | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          member_id?: string
+          progress?: number
+          status?: string
+          target_date?: string
+          target_role?: string | null
+          timeline?: string | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "diamond_goals_member_id_fkey"
+            columns: ["member_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       energy_rewrites: {
         Row: {
           context_type: string
@@ -382,6 +429,53 @@ export type Database = {
             columns: ["member_id"]
             isOneToOne: false
             referencedRelation: "members"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      goal_milestones: {
+        Row: {
+          completed: boolean
+          completed_at: string | null
+          created_at: string
+          description: string
+          goal_id: string
+          id: string
+          sort_order: number
+          target_date: string | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          completed?: boolean
+          completed_at?: string | null
+          created_at?: string
+          description?: string
+          goal_id: string
+          id?: string
+          sort_order?: number
+          target_date?: string | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          completed?: boolean
+          completed_at?: string | null
+          created_at?: string
+          description?: string
+          goal_id?: string
+          id?: string
+          sort_order?: number
+          target_date?: string | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "goal_milestones_goal_id_fkey"
+            columns: ["goal_id"]
+            isOneToOne: false
+            referencedRelation: "diamond_goals"
             referencedColumns: ["id"]
           },
         ]
